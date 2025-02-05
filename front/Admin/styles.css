@@ -1,0 +1,85 @@
+body {
+ font-family: Arial, sans-serif;
+ margin: 0;
+ padding: 0;
+ background-color: grey;
+}
+
+.admin-container {
+ padding: 20px;
+}
+
+.header {
+ background-color: #006699;
+ color: white;
+ padding: 15px;
+ text-align: center;
+}
+
+.appointments-table {
+ width: 100%;
+ border-collapse: collapse;
+ margin-bottom: 20px;
+}
+
+.appointments-table th, .appointments-table td {
+ border: 1px solid #ddd;
+ padding: 10px;
+ text-align: center;
+}
+
+.action-btn {
+ padding: 5px 10px;
+ margin: 0 2px;
+ cursor: pointer;
+}
+
+.action-btn.view { background-color: #4CAF50; color: white; }
+.action-btn.edit { background-color: #FFC107; color: white; }
+.action-btn.delete { background-color: #F44336; color: white; }
+
+.popup {
+ position: fixed;
+ top: 50%;
+ left: 50%;
+ transform: translate(-50%, -50%);
+ width: 400px;
+ padding: 20px;
+ background: white;
+ box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+ z-index: 1000;
+ display: none;
+}
+
+.popup.active {
+ display: block;
+}
+
+.popup-header {
+ font-weight: bold;
+ margin-bottom: 15px;
+}
+
+.popup-actions {
+ text-align: right;
+}
+
+.popup-actions button {
+ padding: 5px 10px;
+ margin: 0 2px;
+}
+
+.overlay {
+ position: fixed;
+ top: 0;
+ left: 0;
+ width: 100%;
+ height: 100%;
+ background: rgba(0, 0, 0, 0.5);
+ z-index: 999;
+ display: none;
+}
+
+.overlay.active {
+ display: block;
+}
