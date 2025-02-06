@@ -42,11 +42,7 @@ if ($result->num_rows > 0) {
 
         // Redirigir al usuario según su rol
         if ($row['rol'] === 'admin') {
-<<<<<<< HEAD
-            header("Location: ../Admin/index.html");
-=======
             header("Location: ../SesionAdmin/admin.html");
->>>>>>> b396e19ad4cbfd086728c9688f6c4f67c3dbbbbf
         } else {
             header("Location: ../User/usuario_v.php");
         }
