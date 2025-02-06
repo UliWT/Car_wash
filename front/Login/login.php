@@ -43,13 +43,12 @@ if ($result->num_rows > 0) {
         // Redirigir al usuario según su rol
         if ($row['rol'] === 'admin') {
             header("Location: ../Admin/index.html");
-            header("Location: ../SesionAdmin/admin.html");
         } else {
             header("Location: ../User/usuario_v.php");
         }
         exit();
     } else {
-        echo md5("tu_contraseña");
+        echo "Contraseña Incorrecta";
     }
 } else {
     echo "<div class='message error'>Usuario no encontrado.</div>";
