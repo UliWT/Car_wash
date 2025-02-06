@@ -48,7 +48,7 @@ if ($result->num_rows > 0) {
         }
         exit();
     } else {
-        echo md5("tu_contraseña");
+        echo "Contraseña Incorrecta";
     }
 } else {
     echo "<div class='message error'>Usuario no encontrado.</div>";
