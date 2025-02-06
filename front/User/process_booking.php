@@ -27,9 +27,6 @@ $matricula = $_POST['matricula'];
 $tipo = $_POST['tipo'];
 $fecha = $_POST['fecha'];
 $id_servicio = $_POST['id_servicio'];
-
-echo "ID Usuario: " . $id_usuario . "<br>";
-
 // Insertar vehículo
 $stmt = $conn->prepare("INSERT INTO vehiculos (modelo, marca, matricula, tipo, id_usuario) VALUES (?, ?, ?, ?, ?)");
 $stmt->bind_param("ssssi", $modelo, $marca, $matricula, $tipo, $id_usuario);
