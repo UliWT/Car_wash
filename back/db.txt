@@ -12,7 +12,7 @@ CREATE TABLE personas (
   correo VARCHAR(100) UNIQUE,
   direccion TEXT,
   contrasena VARCHAR(255) NOT NULL,
-  rol TEXT NOT NULL 
+  rol VARCHAR(10) NOT NULL 
 );
 
 CREATE TABLE vehiculos (
@@ -20,7 +20,7 @@ CREATE TABLE vehiculos (
   modelo VARCHAR(50) NOT NULL,
   marca VARCHAR(50) NOT NULL,
   matricula VARCHAR(20) NOT NULL UNIQUE,
-  tipo ENUM('Auto', 'Camioneta', 'Moto') NOT NULL,
+  tipo VARCHAR(50) NOT NULL,
   id_usuario BIGINT NOT NULL,
   FOREIGN KEY (id_usuario) REFERENCES personas(id_usuario) ON DELETE CASCADE
 );
@@ -47,13 +47,17 @@ CREATE TABLE turnos (
 CREATE TABLE pagos (
   id_pago BIGINT AUTO_INCREMENT PRIMARY KEY,
   id_usuario BIGINT NOT NULL,
- id_turno BIGINT NOT NULL,
+  id_turno BIGINT NOT NULL,
   monto_total DECIMAL(10,2) NOT NULL,
-  fecha DATE NOT NULL,
+  fecha DATETIME NOT NULL,
   FOREIGN KEY (id_usuario) REFERENCES personas(id_usuario) ON DELETE CASCADE,
   FOREIGN KEY (id_turno) REFERENCES turnos(id_turno) ON DELETE CASCADE
 );
 
+
 INSERT INTO servicios VALUES (1, 'Limpieza Interior', 'Aspirado y limpieza profunda.', 50000);
 INSERT INTO servicios VALUES (2, 'Lavado Exterior', 'Incluye lavado y encerado.', 60000);
-INSERT INTO servicios VALUES (3, 'Lavado Completo y Detailing', 'Incluye limpieza interior y exterior.', 100000);
+INSERT INTO servicios VALUES (3, 'Lavado Completo y Detailing', 'Incluye limpieza interior y exterior.', 100000);
+UPDATE personas
+SET contrasena = MD5('contra123')
+WHERE id_usuario = 1;
