@@ -1,12 +1,11 @@
-
 <?php
 // Iniciar sesión
 session_start();
 
 // Configuración de la conexión a la base de datos
 $servername = "localhost";
-$username = "root"; // Cambia esto por tu usuario de MySQL
-$password = ""; // Cambia esto por tu contraseña de MySQL
+$username = "root";
+$password = "";
 $dbname = "dbcarwash";
 
 // Crear conexión
@@ -18,8 +17,11 @@ if ($conn->connect_error) {
 }
 
 // Recoger datos del formulario
-$correo = $_POST['correo'];
-$contrasena = $_POST['contrasena'];
+$correo = trim($_POST['correo']);
+$contrasena = trim($_POST['contrasena']);
+
+// Encriptar la contraseña con MD5
+$hashed_password = md5($contrasena);
 
 // Consulta para verificar el usuario en la tabla "personas"
 $sql = "SELECT id_usuario, nombre, contrasena, rol FROM personas WHERE correo = ?";
@@ -32,21 +34,22 @@ if ($result->num_rows > 0) {
     // Usuario encontrado, verificar contraseña
     $row = $result->fetch_assoc();
 
-    if (md5($contrasena) === $row['contrasena']) { // Comparar contraseñas encriptadas con MD5
+    if ($hashed_password === $row['contrasena']) { // Comparar hash MD5
         // Guardar usuario en sesión
-        $_SESSION['id_usuario'] = $row['id_usuario']; // Guardar el ID en la sesión
+        $_SESSION['id_usuario'] = $row['id_usuario'];
         $_SESSION['nombre'] = $row['nombre'];
         $_SESSION['rol'] = $row['rol'];
 
         // Redirigir al usuario según su rol
         if ($row['rol'] === 'admin') {
+            header("Location: ../Admin/index.html");
             header("Location: ../SesionAdmin/admin.html");
         } else {
             header("Location: ../User/usuario_v.php");
         }
         exit();
     } else {
-        echo "<div class='message error'>Contraseña incorrecta.</div>";
+        echo md5("tu_contraseña");
     }
 } else {
     echo "<div class='message error'>Usuario no encontrado.</div>";
@@ -56,4 +59,3 @@ if ($result->num_rows > 0) {
 $stmt->close();
 $conn->close();
 ?>
-
