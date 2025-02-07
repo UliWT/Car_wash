@@ -1,4 +1,3 @@
-
 <?php
 // Iniciar sesión
 session_start();
@@ -125,18 +124,19 @@ $id_usuario = $_SESSION['id_usuario'];
     })
     .then(response => response.text())
     .then(text => {
-        console.log("Respuesta del servidor:", text);
-        if (text.includes("Registro exitoso")) {
-            alert("Turno guardado exitosamente.");
-            closeForm();
-        } else {
-            alert("Error al guardar el turno.");
-        }
-    })
-    .catch(error => {
-        console.error("Error:", error);
-        alert("Hubo un problema con el envío del turno.");
-    });
+    console.log("Respuesta del servidor:", text);
+    if (text.toLowerCase().includes("exitoso")) { // Buscar cualquier mensaje que contenga "exitoso"
+        alert("Turno guardado exitosamente.");
+        closeForm();
+    } else {
+        alert("Error al guardar el turno: " + text); // Mostrar el error real del PHP
+    }
+})
+.catch(error => {
+    console.error("Error:", error);
+    alert("Hubo un problema con el envío del turno.");
+});
+
 }
 
     </script>

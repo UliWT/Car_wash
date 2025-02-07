@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pantalla de Administrador</title>
-    <link rel="stylesheet" href="../Admin/styles.css">
-   
+    <link rel="stylesheet" href="../styles.css"> <!-- Ajusta la ruta si es necesario -->
 </head>
 <body>
     <div class="admin-container">
@@ -17,95 +16,35 @@
                 <thead>
                     <tr>
                         <th>Fecha</th>
-                        <th>Hora</th>
+                        <th>Estado</th>
                         <th>Vehículo</th>
                         <th>Cliente</th>
                         <th>Servicio</th>
-                        <th>Precio</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
-                <Table class="ingreso-datos">
-                    <th id="Fecha"></th>
-                    <th id="Hora"></th>
-                    <th id="matricula"></th>
-                    <th id="nombre"></th>
-                    <th id="servicio"></th>
-                    <th id="precio"></th>
-                    <th id="acciones"></th>
-                </Table>
-                <tbody>
-                    <tr>
-                        <td>
-                            <button class="action-btn view" onclick="showPopup('viewPopup')">Ver</button>
-                            <button class="action-btn edit" onclick="showPopup('editPopup')">Editar</button>
-                            <button class="action-btn delete" onclick="showPopup('deletePopup')">Eliminar</button>
-                        </td>
-                    </tr>
+                <tbody id="appointments-body">
+                    <!-- Se cargan los datos dinámicamente desde admin_dashboard.php -->
                 </tbody>
             </table>
             <div class="summary">
-                <p>Total Turnos:</p>
-                <p>Recaudación Total:</p>
+                <p>Total Turnos: <span id="total-turnos"></span></p>
             </div>
         </main>
     </div>
 
-    <!-- Overlays -->
-    <div class="overlay" id="overlay"></div>
-
-    <!-- Popups -->
-    <div class="popup" id="viewPopup">
-        <div class="popup-header">Detalles del Turno</div>
-        <p>Fecha:</p>
-        <p>Hora:</p>
-        <p>Vehículo:</p>
-        <p>Servicio:</p>
-        <div class="popup-actions">
-            <button onclick="closePopup()">Cerrar</button>
-        </div>
-    </div>
-
-    <div class="popup" id="editPopup">
-        <div class="popup-header">Editar Turno</div>
-        <form>
-            <label>Fecha:</label>
-            <input type="date" value="2024-11-19"><br><br>
-            <label>Hora:</label>
-            <input type="time" value="10:00"><br><br>
-            <label>Servicio:</label>
-            <input type="text" value="Seleccione Servicio"><br><br>
-            <div class="popup-actions">
-                <button type="submit">Guardar</button>
-                <button type="button" onclick="closePopup()">Cancelar</button>
-            </div>
-        </form>
-    </div>
-
-    <div class="popup" id="deletePopup">
-        <div class="popup-header">Confirmar Eliminación</div>
-        <p>¿Estás seguro de que deseas eliminar este turno?</p>
-        <div class="popup-actions">
-            <button onclick="deleteAppointment()">Eliminar</button>
-            <button onclick="closePopup()">Cancelar</button>
-        </div>
-    </div>
-
     <script>
-        function showPopup(popupId) {
-            document.getElementById('overlay').classList.add('active');
-            document.getElementById(popupId).classList.add('active');
-        }
-
-        function closePopup() {
-            document.querySelector('.popup.active').classList.remove('active');
-            document.getElementById('overlay').classList.remove('active');
-        }
-
-        function deleteAppointment() {
-            alert('Turno eliminado con éxito');
-            closePopup();
-        }
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch("admin_dashboard.php")
+                .then(response => response.json())
+                .then(data => {
+                    let tbody = document.getElementById("appointments-body");
+                    let totalTurnos = document.getElementById("total-turnos");
+                    tbody.innerHTML = data.html;
+                    totalTurnos.innerText = data.count;
+                })
+                .catch(error => console.error("Error al cargar los turnos:", error));
+        });
     </script>
 </body>
 </html>

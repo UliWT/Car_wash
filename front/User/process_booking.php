@@ -27,27 +27,44 @@ $matricula = $_POST['matricula'];
 $tipo = $_POST['tipo'];
 $fecha = $_POST['fecha'];
 $id_servicio = $_POST['id_servicio'];
-// Insertar vehículo
-$stmt = $conn->prepare("INSERT INTO vehiculos (modelo, marca, matricula, tipo, id_usuario) VALUES (?, ?, ?, ?, ?)");
-$stmt->bind_param("ssssi", $modelo, $marca, $matricula, $tipo, $id_usuario);
-$stmt->execute();
 
-// Obtener el ID del vehículo recién insertado
-$id_vehiculo = $conn->insert_id;
-if (!$id_vehiculo) {
-    die("Error: No se pudo obtener el ID del vehículo.");
+// Validar formato de fecha (YYYY-MM-DD)
+if (!preg_match("/^\d{4}-\d{2}-\d{2}$/", $fecha)) {
+    die("Error: Formato de fecha incorrecto.");
 }
 
-// Insertar la reserva
-$stmt = $conn->prepare("INSERT INTO turnos (id_usuario, id_vehiculo, id_servicio, fecha) VALUES (?, ?, ?, ?)");
+// 1️⃣ **Buscar si el vehículo ya existe**
+$stmt = $conn->prepare("SELECT id_vehiculo FROM vehiculos WHERE matricula = ?");
+$stmt->bind_param("s", $matricula);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows > 0) {
+    // Si el vehículo ya existe, obtener su ID
+    $row = $result->fetch_assoc();
+    $id_vehiculo = $row['id_vehiculo'];
+} else {
+    // Si no existe, lo insertamos
+    $stmt = $conn->prepare("INSERT INTO vehiculos (modelo, marca, matricula, tipo, id_usuario) VALUES (?, ?, ?, ?, ?)");
+    $stmt->bind_param("ssssi", $modelo, $marca, $matricula, $tipo, $id_usuario);
+    
+    if (!$stmt->execute()) {
+        die("Error al registrar el vehículo: " . $stmt->error);
+    }
+    $id_vehiculo = $conn->insert_id; // Obtener ID del nuevo vehículo
+}
+
+// 2️⃣ **Insertar el turno usando el ID del vehículo**
+$stmt = $conn->prepare("INSERT INTO turnos (id_usuario, id_vehiculo, id_servicio, fecha, estado) VALUES (?, ?, ?, ?, 'Nuevo')");
 $stmt->bind_param("iiis", $id_usuario, $id_vehiculo, $id_servicio, $fecha);
 
-if ($stmt->execute()) {
-    echo "Registro exitoso";
+if ($stmt->execute() && $conn->insert_id) { // Se evalúa insert_id para confirmar que se guardó
+    echo "Registro de turno exitoso";
 } else {
     echo "Error en la reserva: " . $stmt->error;
 }
 
+// Cerrar conexiones
 $stmt->close();
 $conn->close();
 ?>
