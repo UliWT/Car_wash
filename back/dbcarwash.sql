@@ -12,7 +12,7 @@ CREATE TABLE personas (
   correo VARCHAR(100) UNIQUE,
   direccion TEXT,
   contrasena VARCHAR(255) NOT NULL,
-  rol TEXT NOT NULL 
+  rol VARCHAR(10) NOT NULL 
 );
 
 CREATE TABLE vehiculos (
@@ -20,7 +20,7 @@ CREATE TABLE vehiculos (
   modelo VARCHAR(50) NOT NULL,
   marca VARCHAR(50) NOT NULL,
   matricula VARCHAR(20) NOT NULL UNIQUE,
-  tipo ENUM('Auto', 'Camioneta', 'Moto') NOT NULL,
+  tipo VARCHAR(50) NOT NULL,
   id_usuario BIGINT NOT NULL,
   FOREIGN KEY (id_usuario) REFERENCES personas(id_usuario) ON DELETE CASCADE
 );
@@ -47,14 +47,68 @@ CREATE TABLE turnos (
 CREATE TABLE pagos (
   id_pago BIGINT AUTO_INCREMENT PRIMARY KEY,
   id_usuario BIGINT NOT NULL,
- id_turno BIGINT NOT NULL,
+  id_turno BIGINT NOT NULL,
   monto_total DECIMAL(10,2) NOT NULL,
-  fecha DATE NOT NULL,
+  fecha DATETIME NOT NULL,
   FOREIGN KEY (id_usuario) REFERENCES personas(id_usuario) ON DELETE CASCADE,
   FOREIGN KEY (id_turno) REFERENCES turnos(id_turno) ON DELETE CASCADE
 );
 
-INSERT INTO personas VALUES (1, 'Jairo', 'Lopez', '2615033284', 'jlo@gmail.com','espana 170', MD5('contra123'), 'Admin');
+CREATE TABLE auditoria_turnos (
+    id_auditoria BIGINT AUTO_INCREMENT PRIMARY KEY,
+    id_turno BIGINT,
+    accion ENUM('INSERT', 'UPDATE', 'DELETE') NOT NULL,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    usuario VARCHAR(100) NOT NULL,
+    descripcion TEXT
+);
+
 INSERT INTO servicios VALUES (1, 'Limpieza Interior', 'Aspirado y limpieza profunda.', 50000);
 INSERT INTO servicios VALUES (2, 'Lavado Exterior', 'Incluye lavado y encerado.', 60000);
 INSERT INTO servicios VALUES (3, 'Lavado Completo y Detailing', 'Incluye limpieza interior y exterior.', 100000);
+UPDATE personas
+SET contrasena = MD5('contra123')
+WHERE id_usuario = 1;
+
+DELIMITER $$
+
+CREATE TRIGGER before_turno_delete
+BEFORE DELETE ON turnos
+FOR EACH ROW
+BEGIN
+    INSERT INTO auditoria_turnos (id_turno, accion, usuario, descripcion)
+    VALUES (OLD.id_turno, 'DELETE', 'admin', 
+            CONCAT('Se eliminó el turno del usuario ', OLD.id_usuario, 
+                   ' con vehículo ', OLD.id_vehiculo, ' y servicio ', OLD.id_servicio));
+END$$
+
+DELIMITER ;
+
+DELIMITER $$
+
+CREATE TRIGGER after_turno_update
+AFTER UPDATE ON turnos
+FOR EACH ROW
+BEGIN
+    INSERT INTO auditoria_turnos (id_turno, accion, usuario, descripcion)
+    VALUES (OLD.id_turno, 'UPDATE', 'admin', 
+            CONCAT('Turno actualizado: Estado de ', OLD.estado, ' a ', NEW.estado, 
+                   ', fecha de ', OLD.fecha, ' a ', NEW.fecha));
+END$$
+
+DELIMITER ;
+
+CREATE OR REPLACE VIEW vista_turnos AS
+SELECT 
+    t.id_turno,
+    p.nombre AS nombre_usuario,
+    p.apellido AS apellido_usuario,
+    v.matricula AS vehiculo_matricula,
+    s.nombre AS servicio,
+    t.fecha,
+    t.estado
+FROM turnos t
+JOIN personas p ON t.id_usuario = p.id_usuario
+JOIN vehiculos v ON t.id_vehiculo = v.id_vehiculo
+JOIN servicios s ON t.id_servicio = s.id_servicio;
+
