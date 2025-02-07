@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pantalla de Administrador</title>
-    <link rel="stylesheet" href="../Admin/styles.css">
-   
+    <link rel="stylesheet" href="styles-admin.css"> <!-- Ajusta la ruta si es necesario -->
 </head>
 <body>
     <div class="admin-container">
@@ -16,86 +15,56 @@
             <table class="appointments-table">
                 <thead>
                     <tr>
-                        <th>Fecha</th>
-                        <th>Hora</th>
-                        <th>Vehículo</th>
+                        <th>ID Turno</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Matrícula</th>
                         <th>Servicio</th>
-                        <th>Precio</th>
-                        <th>Acciones</th>
+                        <th>Fecha</th>
+                        <th>Estado</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <button class="action-btn view" onclick="showPopup('viewPopup')">Ver</button>
-                            <button class="action-btn edit" onclick="showPopup('editPopup')">Editar</button>
-                            <button class="action-btn delete" onclick="showPopup('deletePopup')">Eliminar</button>
-                        </td>
-                    </tr>
+                <tbody id="appointments-body">
+                    <!-- Se cargan los datos dinámicamente desde admin_dashboard.php -->
                 </tbody>
             </table>
             <div class="summary">
-                <p>Total Turnos:</p>
-                <p>Recaudación Total:</p>
+                <p>Total Turnos: <span id="total-turnos"></span></p>
             </div>
         </main>
     </div>
 
-    <!-- Overlays -->
-    <div class="overlay" id="overlay"></div>
-
-    <!-- Popups -->
-    <div class="popup" id="viewPopup">
-        <div class="popup-header">Detalles del Turno</div>
-        <p>Fecha: 19/11/2024</p>
-        <p>Hora: 10:00 AM</p>
-        <p>Vehículo: Auto</p>
-        <p>Servicio: Lavado Completo</p>
-        <div class="popup-actions">
-            <button onclick="closePopup()">Cerrar</button>
-        </div>
-    </div>
-
-    <div class="popup" id="editPopup">
-        <div class="popup-header">Editar Turno</div>
-        <form>
-            <label>Fecha:</label>
-            <input type="date" value="2024-11-19"><br><br>
-            <label>Hora:</label>
-            <input type="time" value="10:00"><br><br>
-            <label>Servicio:</label>
-            <input type="text" value="Lavado Completo"><br><br>
-            <div class="popup-actions">
-                <button type="submit">Guardar</button>
-                <button type="button" onclick="closePopup()">Cancelar</button>
-            </div>
-        </form>
-    </div>
-
-    <div class="popup" id="deletePopup">
-        <div class="popup-header">Confirmar Eliminación</div>
-        <p>¿Estás seguro de que deseas eliminar este turno?</p>
-        <div class="popup-actions">
-            <button onclick="deleteAppointment()">Eliminar</button>
-            <button onclick="closePopup()">Cancelar</button>
-        </div>
-    </div>
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        function showPopup(popupId) {
-            document.getElementById('overlay').classList.add('active');
-            document.getElementById(popupId).classList.add('active');
+        function cargarTurnos() {
+            $.ajax({
+                url: "admin_dashboard.php?t=" + new Date().getTime(),
+                type: "GET",
+                dataType: "json",
+                cache: false,
+                success: function(response) {
+                    if (response.html) {
+                        // Actualizar tabla con los turnos
+                        $("#appointments-body").html(response.html);
+                        // Mostrar total de turnos
+                        $("#total-turnos").text(response.count);
+                    } else {
+                        // En caso de no haber turnos
+                        $("#appointments-body").html("<tr><td colspan='7'>No hay turnos registrados</td></tr>");
+                        $("#total-turnos").text(0);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error en AJAX:", error);
+                }
+            });
         }
 
-        function closePopup() {
-            document.querySelector('.popup.active').classList.remove('active');
-            document.getElementById('overlay').classList.remove('active');
-        }
-
-        function deleteAppointment() {
-            alert('Turno eliminado con éxito');
-            closePopup();
-        }
+        // Cargar turnos al iniciar la página y actualizar cada 2 segundos
+        $(document).ready(function() {
+            cargarTurnos();
+            setInterval(cargarTurnos, 2000); // Refrescar cada 2 segundos
+        });
     </script>
 </body>
 </html>

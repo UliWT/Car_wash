@@ -1,4 +1,6 @@
 <?php
+header('Content-Type: application/json');
+
 $host = "localhost";
 $user = "root";
 $password = "";
@@ -7,23 +9,39 @@ $dbname = "dbcarwash";
 $conn = new mysqli($host, $user, $password, $dbname);
 
 if ($conn->connect_error) {
-    die("Error en la conexión a la base de datos");
+    die(json_encode(["error" => "Error en la conexión: " . $conn->connect_error]));
 }
 
-$email = "admin@lavadero.com";
-$password = md5("admin123"); // Hashear la contraseña
+// 🔹 Agregado `ORDER BY id_turno DESC` para ordenar por ID de turno de manera descendente
+$sql = "SELECT id_turno, nombre_usuario, apellido_usuario, vehiculo_matricula, servicio, fecha, estado FROM vista_turnos ORDER BY id_turno DESC";
+$result = $conn->query($sql);
 
-$sql = "INSERT INTO administradores (email, password) VALUES (?, ?)";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("ss", $email, $password);
-$stmt->execute();
+$html = "";
+$count = 0;
 
-if ($stmt->affected_rows > 0) {
-    echo "Administrador agregado correctamente.";
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $html .= "<tr>";
+        $html .= "<td>{$row['id_turno']}</td>";
+        $html .= "<td>{$row['nombre_usuario']}</td>";
+        $html .= "<td>{$row['apellido_usuario']}</td>";
+        $html .= "<td>{$row['vehiculo_matricula']}</td>";
+        $html .= "<td>{$row['servicio']}</td>";
+        $html .= "<td>{$row['fecha']}</td>";
+        $html .= "<td>{$row['estado']}</td>";
+        $html .= "<td>
+                    <button class='action-btn edit' onclick=\"showPopup('editPopup')\">Editar</button>
+                    <button class='action-btn delete' onclick=\"showPopup('deletePopup')\">Eliminar</button>
+                  </td>";
+        $html .= "</tr>";
+        $count++;
+    }
 } else {
-    echo "Error al agregar administrador.";
+    $html .= "<tr><td colspan='8'>No hay turnos registrados</td></tr>";
 }
 
-$stmt->close();
 $conn->close();
+
+// 🔹 Devolvemos tanto `html` como `count` en la respuesta
+echo json_encode(["html" => $html, "count" => $count]); 
 ?>

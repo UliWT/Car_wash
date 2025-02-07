@@ -4,37 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro de Usuarios - Lavadero de Autos</title>
-    <link rel="stylesheet" href="../Register/styles.css">
+    <link rel="stylesheet" href="styles-register.css">
 </head>
-<body>
-    <div class="container">
+    <div id="master">
+        <div class="phone">
+            <div id="hub"></div>
         <header>
-            <h1>Lavadero de Autos</h1>
+            <p id="title">CAR WASH</p>
         </header>
         <form action="register.php" method="POST">
-            <label for="nombre">Nombre:</label>
+            <label for="nombre"><b>Nombre</b></label>
+            <br>
             <input type="text" id="nombre" name="nombre" required>
-
-            <label for="apellido">Apellido:</label>
+            <br><br>
+            <label for="apellido"><b>Apellido</b></label>
+            <br>
             <input type="text" id="apellido" name="apellido" required>
-
-            <label for="direccion">Dirección:</label>
+            <br><br>
+            <label for="direccion"><b>Dirección</b></label>
+            <br>
             <input type="text" id="direccion" name="direccion" required>
-
-            <label for="correo">Correo electrónico:</label>
+            <br><br>
+            <label for="correo"><b>Correo electrónico</b></label>
+            <br>
             <input type="email" id="correo" name="correo" required>
-
-            <label for="telefono">Teléfono:</label>
+            <br><br>
+            <label for="telefono"><b>Teléfono</b></label>
+            <br>
             <input type="tel" id="telefono" name="telefono" required>
-
-            <label for="contrasena">Contraseña:</label>
+            <br><br>
+            <label for="contrasena"><b>Contraseña</b></label>
+            <br>
             <input type="password" id="contrasena" name="contrasena" required>
-
-            <input type="submit" value="Registrar">
-        </form>
+            <br>
+            <button type="submit" value="Registrar"><b>Registrar</b></form>
         <footer>
-            <p>&copy; 2023 Lavadero de Autos. Todos los derechos reservados.</p>
         </footer>
+        <div id="linea"></div>
     </div>
+    </div>    
+</div>
 </body>
 </html>

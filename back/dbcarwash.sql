@@ -63,6 +63,7 @@ CREATE TABLE auditoria_turnos (
     descripcion TEXT
 );
 
+INSERT INTO personas VALUES (1, 'Jairo', 'Lopez', '2615033284', 'jlo@gmail.com', 'Calle 123', 'contra123', 'admin');
 INSERT INTO servicios VALUES (1, 'Limpieza Interior', 'Aspirado y limpieza profunda.', 50000);
 INSERT INTO servicios VALUES (2, 'Lavado Exterior', 'Incluye lavado y encerado.', 60000);
 INSERT INTO servicios VALUES (3, 'Lavado Completo y Detailing', 'Incluye limpieza interior y exterior.', 100000);
