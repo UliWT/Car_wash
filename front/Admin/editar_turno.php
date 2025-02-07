@@ -1,8 +1,7 @@
 <?php
-header('Content-Type: application/json');
-
 error_reporting(E_ALL);
-ini_set('display_errors', 1);
+ini_set('display_errors', 1); // Mostrar errores si existen
+
 header('Content-Type: application/json');
 
 // Conexión a la base de datos
@@ -29,14 +28,14 @@ if (isset($_POST["id_turno"], $_POST["fecha"], $_POST["servicio"], $_POST["estad
     $stmt->bind_param("sssi", $fecha, $servicio, $estado, $id_turno);
 
     if ($stmt->execute()) {
-        json_encode(["success" => true]);
+        echo json_encode(["success" => true]);
     } else {
-        json_encode(["success" => false, "error" => $stmt->error]);
+        echo json_encode(["success" => false, "error" => $stmt->error]);
     }
 
     $stmt->close();
 } else {
-    json_encode(["success" => false, "error" => "Faltan datos en la solicitud."]);
+    echo json_encode(["success" => false, "error" => "Faltan datos en la solicitud."]);
 }
 
 $conn->close();

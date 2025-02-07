@@ -9,9 +9,15 @@
     <!-- Script para mostrar mensajes de error en un popup -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            let mensaje = "<?php echo $mensaje; ?>"; // Recupera el mensaje desde PHP
-            if (mensaje) {
-                alert(mensaje); // Muestra el popup con el mensaje de error
+            // Obtener el parámetro 'error' de la URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const error = urlParams.get('error');
+            
+            // Si existe un error, mostrar el mensaje correspondiente
+            if (error === 'incorrect_password') {
+                alert("Contraseña incorrecta");
+            } else if (error === 'user_not_found') {
+                alert("Usuario no encontrado");
             }
         });
     </script>
