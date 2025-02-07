@@ -54,6 +54,15 @@ CREATE TABLE pagos (
   FOREIGN KEY (id_turno) REFERENCES turnos(id_turno) ON DELETE CASCADE
 );
 
+CREATE TABLE auditoria_turnos (
+    id_auditoria BIGINT AUTO_INCREMENT PRIMARY KEY,
+    id_turno BIGINT,
+    accion ENUM('INSERT', 'UPDATE', 'DELETE') NOT NULL,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    usuario VARCHAR(100) NOT NULL,
+    descripcion TEXT
+);
+
 
 INSERT INTO servicios VALUES (1, 'Limpieza Interior', 'Aspirado y limpieza profunda.', 50000);
 INSERT INTO servicios VALUES (2, 'Lavado Exterior', 'Incluye lavado y encerado.', 60000);
@@ -61,3 +70,31 @@ INSERT INTO servicios VALUES (3, 'Lavado Completo y Detailing', 'Incluye limpiez
 UPDATE personas
 SET contrasena = MD5('contra123')
 WHERE id_usuario = 1;
+
+DELIMITER $$
+
+CREATE TRIGGER before_turno_delete
+BEFORE DELETE ON turnos
+FOR EACH ROW
+BEGIN
+    INSERT INTO auditoria_turnos (id_turno, accion, usuario, descripcion)
+    VALUES (OLD.id_turno, 'DELETE', 'admin', 
+            CONCAT('Se eliminó el turno del usuario ', OLD.id_usuario, 
+                   ' con vehículo ', OLD.id_vehiculo, ' y servicio ', OLD.id_servicio));
+END$$
+
+DELIMITER ;
+
+DELIMITER $$
+
+CREATE TRIGGER after_turno_update
+AFTER UPDATE ON turnos
+FOR EACH ROW
+BEGIN
+    INSERT INTO auditoria_turnos (id_turno, accion, usuario, descripcion)
+    VALUES (OLD.id_turno, 'UPDATE', 'admin', 
+            CONCAT('Turno actualizado: Estado de ', OLD.estado, ' a ', NEW.estado, 
+                   ', fecha de ', OLD.fecha, ' a ', NEW.fecha));
+END$$
+
+DELIMITER ;
