@@ -30,8 +30,8 @@ if ($result->num_rows > 0) {
         $html .= "<td>{$row['fecha']}</td>";
         $html .= "<td>{$row['estado']}</td>";
         $html .= "<td>
-                    <button class='action-btn edit' onclick=\"showPopup('editPopup')\">Editar</button>
-                    <button class='action-btn delete' onclick=\"showPopup('deletePopup')\">Eliminar</button>
+            <button class='action-btn edit' onclick=\"editarTurno({$row['id_turno']})\">Editar</button>
+            <button class='action-btn delete' onclick=\"eliminarTurno({$row['id_turno']})\">Eliminar</button>
                   </td>";
         $html .= "</tr>";
         $count++;

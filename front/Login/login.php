@@ -17,7 +17,7 @@ if ($conn->connect_error) {
 }
 
 // Variable para almacenar mensajes de error (para mostrar en el popup)
-$mensaje = "";
+$mensaje = "error de pop up";
 
 // Verificar si el formulario ha sido enviado
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
