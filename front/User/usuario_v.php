@@ -49,9 +49,7 @@ $id_usuario = $_SESSION['id_usuario'];
                     <p class="price">$50,000</p>
                 </div>
             </div>
-            <button type="submit" id="Cerrar-Sesion" onclick="window.location.href='../Login/Login.html'">Cerrar Sesión</button>><div id="letra">
-                <li 
-            </div></button>
+            <button class="schedule-btn" id="schedule-btn"><div id="letra"></div></button>
         </main>
     
         <!-- Formulario emergente -->

@@ -19,11 +19,21 @@
                         <th>Fecha</th>
                         <th>Hora</th>
                         <th>Vehículo</th>
+                        <th>Cliente</th>
                         <th>Servicio</th>
                         <th>Precio</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
+                <Table class="ingreso-datos">
+                    <th id="Fecha"></th>
+                    <th id="Hora"></th>
+                    <th id="matricula"></th>
+                    <th id="nombre"></th>
+                    <th id="servicio"></th>
+                    <th id="precio"></th>
+                    <th id="acciones"></th>
+                </Table>
                 <tbody>
                     <tr>
                         <td>
@@ -47,10 +57,10 @@
     <!-- Popups -->
     <div class="popup" id="viewPopup">
         <div class="popup-header">Detalles del Turno</div>
-        <p>Fecha: 19/11/2024</p>
-        <p>Hora: 10:00 AM</p>
-        <p>Vehículo: Auto</p>
-        <p>Servicio: Lavado Completo</p>
+        <p>Fecha:</p>
+        <p>Hora:</p>
+        <p>Vehículo:</p>
+        <p>Servicio:</p>
         <div class="popup-actions">
             <button onclick="closePopup()">Cerrar</button>
         </div>
@@ -64,7 +74,7 @@
             <label>Hora:</label>
             <input type="time" value="10:00"><br><br>
             <label>Servicio:</label>
-            <input type="text" value="Lavado Completo"><br><br>
+            <input type="text" value="Seleccione Servicio"><br><br>
             <div class="popup-actions">
                 <button type="submit">Guardar</button>
                 <button type="button" onclick="closePopup()">Cancelar</button>
