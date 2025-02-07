@@ -45,7 +45,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             // Redirigir al usuario según su rol
             if ($row['rol'] === 'admin') {
-                header("Location: ../SesionAdmin/admin.html");
+                header("Location: ../Admin/index.html");
             } else {
                 header("Location: ../User/usuario_v.php");
             }

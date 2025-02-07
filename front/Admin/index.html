@@ -65,6 +65,23 @@
             cargarTurnos();
             setInterval(cargarTurnos, 2000); // Refrescar cada 2 segundos
         });
+
+        function eliminarTurno(id) {
+            if (confirm("¿Seguro que deseas eliminar el turno " + id + "?")) {
+                $.ajax({
+                    url: "eliminar_turno.php",
+                    type: "POST",
+                    data: { id_turno: id },
+                    success: function(response) {
+                        alert(response);
+                        cargarTurnos();
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error en AJAX:", error);
+                    }
+                });
+            }
+        }
     </script>
 </body>
 </html>
