@@ -22,6 +22,7 @@
                         <th>Servicio</th>
                         <th>Fecha</th>
                         <th>Estado</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody id="appointments-body">
@@ -44,13 +45,10 @@
                 cache: false,
                 success: function(response) {
                     if (response.html) {
-                        // Actualizar tabla con los turnos
                         $("#appointments-body").html(response.html);
-                        // Mostrar total de turnos
                         $("#total-turnos").text(response.count);
                     } else {
-                        // En caso de no haber turnos
-                        $("#appointments-body").html("<tr><td colspan='7'>No hay turnos registrados</td></tr>");
+                        $("#appointments-body").html("<tr><td colspan='8'>No hay turnos registrados</td></tr>");
                         $("#total-turnos").text(0);
                     }
                 },
@@ -60,11 +58,143 @@
             });
         }
 
-        // Cargar turnos al iniciar la página y actualizar cada 2 segundos
         $(document).ready(function() {
             cargarTurnos();
             setInterval(cargarTurnos, 2000); // Refrescar cada 2 segundos
         });
+
+        function editarTurno(id) {
+            $.ajax({
+                url: "admin_dashboard.php",
+                type: "GET",
+                data: { id_turno: id },
+                dataType: "json",
+                success: function(data) {
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        $("#edit-id_turno").val(data.id_turno);
+                        $("#edit-fecha").val(data.fecha);
+                        $("#edit-servicio").val(data.servicio);
+                        $("#edit-estado").val(data.estado);
+                        $("#editPopup").show();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error al obtener los datos del turno:", error);
+                }
+            });
+        }
+
+        function cerrarPopup() {
+            $("#editPopup").hide();
+        }
+        
+        function guardarEdicion() {
+    $.ajax({
+        url: "editar_turno.php",
+        type: "POST",
+        data: $("#editTurnoForm").serialize(),
+        dataType: "json", // Asegurar que esperamos JSON
+        success: function(response) {
+            console.log("Respuesta del servidor:", response);
+            if (response.success) {
+                alert("Turno actualizado correctamente");
+                cargarTurnos();  // Refrescar la tabla en tiempo real
+                cerrarPopup();
+            } else {
+                alert("Error: " + response.error);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("Error en AJAX:", error);
+            console.log("Respuesta del servidor:", xhr.responseText);
+        }
+    });
+}
+
+        $(document).ready(function() {
+            $("#editTurnoForm").submit(function(event) {
+                event.preventDefault(); // Evita la recarga de la página
+
+                $.ajax({
+                    url: "editar_turno.php",
+                    type: "POST",
+                    data: $(this).serialize(),
+                    dataType: "json",
+                    success: function(response) {
+                        if (response.success) {
+                            alert("Turno actualizado correctamente.");
+                            cerrarPopup();
+                            cargarTurnos();
+                        } else {
+                            alert("Error al actualizar: " + response.error);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error en AJAX:", error);
+                        alert("Error al actualizar el turno.");
+                    }
+                });
+            });
+        });
+
+        function eliminarTurno(id) {
+            if (confirm("¿Seguro que deseas eliminar el turno " + id + "?")) {
+                $.ajax({
+                    url: "eliminar_turno.php",
+                    type: "POST",
+                    data: { id_turno: id },
+                    success: function(response) {
+                        alert(response);
+                        cargarTurnos();
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error en AJAX:", error);
+                    }
+                });
+            }
+        }
     </script>
+
+    <!-- Popup para editar turnos -->
+    <div id="editPopup" class="popup">
+        <div class="popup-content">
+            <span class="close-btn" onclick="cerrarPopup()">&times;</span>
+            <h2>Editar Turno</h2>
+            <form id="editTurnoForm">
+                <input type="hidden" id="edit-id_turno" name="id_turno">
+
+                <label for="edit-fecha">Fecha:</label>
+                <input type="date" id="edit-fecha" name="fecha" required>
+
+                <label for="edit-servicio">Servicio:</label>
+                <input type="text" id="edit-servicio" name="servicio" required>
+
+                <label for="edit-estado">Estado:</label>
+                <select id="edit-estado" name="estado">
+                    <option value="Pendiente">Pendiente</option>
+                    <option value="Completado">Completado</option>
+                    <option value="Cancelado">Cancelado</option>
+                </select>
+
+                <button type="submit">Guardar Cambios</button>
+            </form>
+        </div>
+    </div>
+
+    <style>
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            box-shadow: 0px 0px 10px gray;
+            z-index: 1000;
+        }
+    </style>
 </body>
 </html>
