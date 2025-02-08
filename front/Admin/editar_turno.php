@@ -1,42 +1,34 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1); // Mostrar errores si existen
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $servername = "localhost";
+    $username = "root";
+    $password = "";
+    $dbname = "dbcarwash";
 
-header('Content-Type: application/json');
+    $conn = new mysqli($servername, $username, $password, $dbname);
 
-// Conexión a la base de datos
-$host = "localhost";
-$user = "root";
-$password = "";
-$dbname = "dbcarwash";
+    if ($conn->connect_error) {
+        die(json_encode(["status" => "error", "message" => "Error de conexión"]));
+    }
 
-$conn = new mysqli($host, $user, $password, $dbname);
+    if (!isset($_POST['id_turno']) || !isset($_POST['fecha']) || !isset($_POST['estado'])) {
+        die(json_encode(["status" => "error", "message" => "Faltan datos requeridos"]));
+    }
 
-if ($conn->connect_error) {
-    die(json_encode(["success" => false, "error" => "Error en la conexión: " . $conn->connect_error]));
-}
+    $id_turno = $_POST['id_turno'];
+    $nueva_fecha = $_POST['fecha'];
+    $nuevo_estado = $_POST['estado'];
 
-// Verificar si llegaron los datos
-if (isset($_POST["id_turno"], $_POST["fecha"], $_POST["servicio"], $_POST["estado"])) {
-    $id_turno = $_POST["id_turno"];
-    $fecha = $_POST["fecha"];
-    $servicio = $_POST["servicio"];
-    $estado = $_POST["estado"];
-
-    // Query para actualizar los datos
-    $stmt = $conn->prepare("UPDATE turnos SET fecha = ?, servicio = ?, estado = ? WHERE id_turno = ?");
-    $stmt->bind_param("sssi", $fecha, $servicio, $estado, $id_turno);
+    $stmt = $conn->prepare("UPDATE turnos SET fecha = ?, estado = ? WHERE id_turno = ?");
+    $stmt->bind_param("ssi", $nueva_fecha, $nuevo_estado, $id_turno);
 
     if ($stmt->execute()) {
-        echo json_encode(["success" => true]);
+        echo json_encode(["status" => "success", "message" => "Turno actualizado correctamente"]);
     } else {
-        echo json_encode(["success" => false, "error" => $stmt->error]);
+        echo json_encode(["status" => "error", "message" => "Error al actualizar el turno"]);
     }
 
     $stmt->close();
-} else {
-    echo json_encode(["success" => false, "error" => "Faltan datos en la solicitud."]);
+    $conn->close();
 }
-
-$conn->close();
 ?>

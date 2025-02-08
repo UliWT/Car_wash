@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pantalla de Administrador</title>
-    <link rel="stylesheet" href="styles-admin.css"> <!-- Ajusta la ruta si es necesario -->
+    <link rel="stylesheet" href="styles-admin.css">
 </head>
 <body>
     <div class="admin-container">
@@ -36,134 +36,93 @@
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        function cargarTurnos() {
+<script>
+    function cargarTurnos() {
+        $.ajax({
+            url: "admin_dashboard.php?t=" + new Date().getTime(),
+            type: "GET",
+            dataType: "json",
+            cache: false,
+            success: function(response) {
+                if (response.html) {
+                    $("#appointments-body").html(response.html);
+                    $("#total-turnos").text(response.count);
+                } else {
+                    $("#appointments-body").html("<tr><td colspan='8'>No hay turnos registrados</td></tr>");
+                    $("#total-turnos").text(0);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("Error en AJAX:", error);
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        cargarTurnos();
+        setInterval(cargarTurnos, 2000); // Refrescar cada 2 segundos
+    });
+
+    function editarTurno(id_turno, fecha, servicio, estado) {
+        // Llenar el formulario del popup con los datos actuales del turno
+        $("#edit-id_turno").val(id_turno);
+        $("#edit-fecha").val(fecha);
+        $("#edit-servicio").val(servicio);
+        $("#edit-estado").val(estado);
+
+        // Mostrar el popup de edición
+        $("#editPopup").show();
+    }
+
+    function cerrarPopup() {
+        $("#editPopup").hide();
+    }
+
+    $(document).ready(function() {
+        $("#editTurnoForm").submit(function(event) {
+            event.preventDefault(); // Evita la recarga de la página
+
             $.ajax({
-                url: "admin_dashboard.php?t=" + new Date().getTime(),
-                type: "GET",
+                url: "editar_turno.php",
+                type: "POST",
+                data: $(this).serialize(),
                 dataType: "json",
-                cache: false,
                 success: function(response) {
-                    if (response.html) {
-                        $("#appointments-body").html(response.html);
-                        $("#total-turnos").text(response.count);
+                    console.log("Respuesta del servidor:", response);
+                    if (response.status === "success") {
+                        alert("Turno actualizado correctamente.");
+                        cerrarPopup(); // Cierra el popup al actualizar correctamente
+                        cargarTurnos(); // Recargar la lista de turnos
                     } else {
-                        $("#appointments-body").html("<tr><td colspan='8'>No hay turnos registrados</td></tr>");
-                        $("#total-turnos").text(0);
+                        alert("Error al actualizar: " + response.message);
                     }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error en AJAX:", error);
+                    alert("Error al actualizar el turno.");
+                }
+            });
+        });
+    });
+
+    function eliminarTurno(id) {
+        if (confirm("¿Seguro que deseas eliminar el turno " + id + "?")) {
+            $.ajax({
+                url: "eliminar_turno.php",
+                type: "POST",
+                data: { id_turno: id },
+                success: function(response) {
+                    alert(response);
+                    cargarTurnos();
                 },
                 error: function(xhr, status, error) {
                     console.error("Error en AJAX:", error);
                 }
             });
         }
-
-        $(document).ready(function() {
-            cargarTurnos();
-            setInterval(cargarTurnos, 2000); // Refrescar cada 2 segundos
-        });
-
-        function editarTurno(id) {
-            $.ajax({
-                url: "admin_dashboard.php",
-                type: "GET",
-                data: { id_turno: id },
-                dataType: "json",
-                success: function(data) {
-                    if (data.error) {
-                        alert(data.error);
-                    } else {
-                        $("#edit-id_turno").val(data.id_turno);
-                        $("#edit-fecha").val(data.fecha);
-                        $("#edit-servicio").val(data.servicio);
-                        $("#edit-estado").val(data.estado);
-                        $("#editPopup").show();
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error("Error al obtener los datos del turno:", error);
-                }
-            });
-        }
-
-        function cerrarPopup() {
-            $("#editPopup").hide();
-        }
-
-        function guardarEdicion() {
-   $(document).ready(function() {
-    $("#editTurnoForm").submit(function(event) {
-        event.preventDefault(); // Evita la recarga de la página
-
-        $.ajax({
-            url: "editar_turno.php",
-            type: "POST",
-            data: $(this).serialize(),
-            dataType: "json",
-            success: function(response) {
-                console.log("Respuesta del servidor:", response);
-                if (response.success) {
-                    alert("Turno actualizado correctamente.");
-                    cerrarPopup();
-                    cargarTurnos();
-                } else {
-                    alert("Error al actualizar: " + response.error);
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error("Error en AJAX:", error);
-                console.log("Respuesta del servidor:", xhr.responseText);
-                alert("Error al actualizar el turno.");
-            }
-        });
-    });
-});
-
     }
+</script>
 
-        $(document).ready(function() {
-            $("#editTurnoForm").submit(function(event) {
-                event.preventDefault(); // Evita la recarga de la página
-
-                $.ajax({
-                    url: "editar_turno.php",
-                    type: "POST",
-                    data: $(this).serialize(),
-                    dataType: "json",
-                    success: function(response) {
-                        if (response.success) {
-                            alert("Turno actualizado correctamente.");
-                            cerrarPopup();
-                            cargarTurnos();
-                        } else {
-                            alert("Error al actualizar: " + response.error);
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error("Error en AJAX:", error);
-                        alert("Error al actualizar el turno.");
-                    }
-                });
-            });
-        });
-
-        function eliminarTurno(id) {
-            if (confirm("¿Seguro que deseas eliminar el turno " + id + "?")) {
-                $.ajax({
-                    url: "eliminar_turno.php",
-                    type: "POST",
-                    data: { id_turno: id },
-                    success: function(response) {
-                        alert(response);
-                        cargarTurnos();
-                    },
-                    error: function(xhr, status, error) {
-                        console.error("Error en AJAX:", error);
-                    }
-                });
-            }
-        }
-    </script>
 
     <!-- Popup para editar turnos -->
     <div id="editPopup" class="popup">
@@ -181,9 +140,10 @@
 
                 <label for="edit-estado">Estado:</label>
                 <select id="edit-estado" name="estado">
-                    <option value="Pendiente">Pendiente</option>
-                    <option value="Completado">Completado</option>
-                    <option value="Cancelado">Cancelado</option>
+                    <option value="Nuevo">Nuevo</option>
+                    <option value="En Proceso">En Proceso</option>
+                    <option value="Enviado">Enviado</option>
+                    <option value="Entregado">Entregado</option>
                 </select>
 
                 <button type="submit">Guardar Cambios</button>
