@@ -33,7 +33,7 @@ if (!preg_match("/^\d{4}-\d{2}-\d{2}$/", $fecha)) {
     die("Error: Formato de fecha incorrecto.");
 }
 
-// 1️⃣ **Buscar si el vehículo ya existe**
+// Buscar si el vehículo ya existe**
 $stmt = $conn->prepare("SELECT id_vehiculo FROM vehiculos WHERE matricula = ?");
 $stmt->bind_param("s", $matricula);
 $stmt->execute();
@@ -54,7 +54,10 @@ if ($result->num_rows > 0) {
     $id_vehiculo = $conn->insert_id; // Obtener ID del nuevo vehículo
 }
 
-// 2️⃣ **Insertar el turno usando el ID del vehículo**
+$conn->begin_transaction();
+
+try{
+//Insertar el turno usando el ID del vehículo**
 $stmt = $conn->prepare("INSERT INTO turnos (id_usuario, id_vehiculo, id_servicio, fecha, estado) VALUES (?, ?, ?, ?, 'Nuevo')");
 $stmt->bind_param("iiis", $id_usuario, $id_vehiculo, $id_servicio, $fecha);
 
@@ -63,6 +66,17 @@ if ($stmt->execute() && $conn->insert_id) { // Se evalúa insert_id para confirm
 } else {
     echo "Error en la reserva: " . $stmt->error;
 }
+
+// Confirmar transacción
+$conn->commit();
+echo json_encode(["status" => "success", "message" => "Registro de turno exitoso"]);
+
+} catch (Exception $e) {
+    // Si hay algún error, revertir los cambios
+    $conn->rollback();
+    echo json_encode(["status" => "error", "message" => $e->getMessage()]);
+}
+
 
 // Cerrar conexiones
 $stmt->close();

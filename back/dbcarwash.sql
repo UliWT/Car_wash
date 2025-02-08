@@ -63,7 +63,32 @@ CREATE TABLE auditoria_turnos (
     descripcion TEXT
 );
 
-INSERT INTO personas VALUES (1, 'Jairo', 'Lopez', '2615033284', 'jlo@gmail.com', 'Calle 123', 'contra123', 'admin');
+CREATE TABLE marcas (
+id_marcar BIGINT AUTO_INCREMENT PRIMARY KEY,
+marca VARCHAR(25) NOT NULL,
+pais VARCHAR(25) NOT NULL
+);
+
+INSERT INTO marcas VALUES(1, "PEUGEOT", "FRANCIA");
+INSERT INTO marcas VALUES(2, "BMW", "ALEMANIA");
+INSERT INTO marcas VALUES(3, "VOLKSWAGEN", "ALEMANIA");
+INSERT INTO marcas VALUES(4, "TOYOTA", "JAPON");
+INSERT INTO marcas VALUES(5, "FORD", "USA");
+INSERT INTO marcas VALUES(6, "FIAT", "ITALIA");
+INSERT INTO marcas VALUES(7, "AUDI", "ALEMANIA");
+INSERT INTO marcas VALUES(8, "RAM", "USA");
+INSERT INTO marcas VALUES(9, "KAWASAKI", "JAPON");
+INSERT INTO marcas VALUES(10, "HONDA", "JAPON");
+INSERT INTO marcas VALUES(11, "HYUNDAI", "JAPON");
+INSERT INTO marcas VALUES(12, "YAMAHA", "JAPON");
+INSERT INTO marcas VALUES(13, "NISSAN", "JAPON");
+INSERT INTO marcas VALUES(14, "CITROEN", "FRANCIA");
+INSERT INTO marcas VALUES(15, "RENAULT", "FRANCIA");
+INSERT INTO marcas VALUES(16, "MERCEDES-BENZ", "ALEMANIA");
+INSERT INTO marcas VALUES(17, "HARLEY-DAVIDSON", "USA");
+INSERT INTO marcas VALUES(18, "CHEVROLET", "USA");
+
+INSERT INTO personas VALUES(1, "ADMIN", "ADMIN", 11111, "admin@admin.com", "admin", "contra123", "admin");
 INSERT INTO servicios VALUES (1, 'Limpieza Interior', 'Aspirado y limpieza profunda.', 50000);
 INSERT INTO servicios VALUES (2, 'Lavado Exterior', 'Incluye lavado y encerado.', 60000);
 INSERT INTO servicios VALUES (3, 'Lavado Completo y Detailing', 'Incluye limpieza interior y exterior.', 100000);
@@ -112,4 +137,3 @@ FROM turnos t
 JOIN personas p ON t.id_usuario = p.id_usuario
 JOIN vehiculos v ON t.id_vehiculo = v.id_vehiculo
 JOIN servicios s ON t.id_servicio = s.id_servicio;
-
