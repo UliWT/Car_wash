@@ -57,12 +57,39 @@
                 }
             });
         }
-
+    
         $(document).ready(function() {
             cargarTurnos();
             setInterval(cargarTurnos, 2000); // Refrescar cada 2 segundos
+    
+            // Maneja el envío del formulario de edición
+            $("#editTurnoForm").submit(function(event) {
+                event.preventDefault(); // Evita la recarga de la página
+    
+                $.ajax({
+                    url: "editar_turno.php",
+                    type: "POST",
+                    data: $(this).serialize(),
+                    dataType: "json",
+                    success: function(response) {
+                        console.log("Respuesta del servidor:", response);
+                        if (response.success) {
+                            alert("Turno actualizado correctamente.");
+                            cerrarPopup();
+                            cargarTurnos();
+                        } else {
+                            alert("Error al actualizar: " + response.error);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error en AJAX:", error);
+                        console.log("Respuesta del servidor:", xhr.responseText);
+                        alert("Error al actualizar el turno.");
+                    }
+                });
+            });
         });
-
+    
         function editarTurno(id) {
             $.ajax({
                 url: "admin_dashboard.php",
@@ -85,60 +112,15 @@
                 }
             });
         }
-
+    
         function cerrarPopup() {
             $("#editPopup").hide();
         }
-        
+    
         function guardarEdicion() {
-    $.ajax({
-        url: "editar_turno.php",
-        type: "POST",
-        data: $("#editTurnoForm").serialize(),
-        dataType: "json", // Asegurar que esperamos JSON
-        success: function(response) {
-            console.log("Respuesta del servidor:", response);
-            if (response.success) {
-                alert("Turno actualizado correctamente");
-                cargarTurnos();  // Refrescar la tabla en tiempo real
-                cerrarPopup();
-            } else {
-                alert("Error: " + response.error);
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error("Error en AJAX:", error);
-            console.log("Respuesta del servidor:", xhr.responseText);
+            $("#editTurnoForm").submit(); // Dispara el evento submit del formulario
         }
-    });
-}
-
-        $(document).ready(function() {
-            $("#editTurnoForm").submit(function(event) {
-                event.preventDefault(); // Evita la recarga de la página
-
-                $.ajax({
-                    url: "editar_turno.php",
-                    type: "POST",
-                    data: $(this).serialize(),
-                    dataType: "json",
-                    success: function(response) {
-                        if (response.success) {
-                            alert("Turno actualizado correctamente.");
-                            cerrarPopup();
-                            cargarTurnos();
-                        } else {
-                            alert("Error al actualizar: " + response.error);
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error("Error en AJAX:", error);
-                        alert("Error al actualizar el turno.");
-                    }
-                });
-            });
-        });
-
+    
         function eliminarTurno(id) {
             if (confirm("¿Seguro que deseas eliminar el turno " + id + "?")) {
                 $.ajax({
@@ -156,6 +138,7 @@
             }
         }
     </script>
+    
 
     <!-- Popup para editar turnos -->
     <div id="editPopup" class="popup">
@@ -167,6 +150,9 @@
 
                 <label for="edit-fecha">Fecha:</label>
                 <input type="date" id="edit-fecha" name="fecha" required>
+
+                <label for="edit-id_turno">id_turno:</label>
+                <input type="bigint" id="edit-id_turno" name="id_turno" required>
 
                 <label for="edit-servicio">Servicio:</label>
                 <input type="text" id="edit-servicio" name="servicio" required>

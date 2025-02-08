@@ -1,0 +1,7 @@
+Array
+(
+    [id_turno] => 5
+    [fecha] => 2025-02-13
+    [servicio] => limpieza interior
+    [estado] => Pendiente
+)

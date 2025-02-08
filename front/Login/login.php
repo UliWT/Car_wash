@@ -16,9 +16,6 @@ if ($conn->connect_error) {
     die("Conexión fallida: " . $conn->connect_error);
 }
 
-// Variable para almacenar mensajes de error (para mostrar en el popup)
-$mensaje = "error de pop up";
-
 // Verificar si el formulario ha sido enviado
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Recoger datos del formulario
@@ -51,12 +48,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
             exit(); // Detener la ejecución del script después de la redirección
         } else {
-            // Si la contraseña es incorrecta, se almacena un mensaje de error
-            $mensaje = "Contraseña incorrecta";
+            // Si la contraseña es incorrecta, redirigir a Login.html con el mensaje de error
+            header("Location: Login.html?error=incorrect_password");
+            exit();
         }
     } else {
-        // Si el correo no está registrado, se almacena un mensaje de error
-        $mensaje = "Usuario no encontrado";
+        // Si el correo no está registrado, redirigir a Login.html con el mensaje de error
+        header("Location: Login.html?error=user_not_found");
+        exit();
     }
 
     // Cerrar la consulta preparada
