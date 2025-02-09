@@ -160,5 +160,11 @@ $marcas_result = $conn->query("SELECT id_marcas, marca FROM marcas");
         }
 
     </script>
+
+    
+    <form action="../Logout/logout.php" method="POST">
+        <button type="submit">Cerrar Sesión</button>
+    </form>
+
 </body>
 </html>
