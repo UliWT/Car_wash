@@ -12,8 +12,12 @@ if ($conn->connect_error) {
     die(json_encode(["error" => "Error en la conexión: " . $conn->connect_error]));
 }
 
-// 🔹 Agregado `ORDER BY id_turno DESC` para ordenar por ID de turno de manera descendente
-$sql = "SELECT id_turno, nombre_usuario, apellido_usuario, vehiculo_matricula, servicio, fecha, estado FROM vista_turnos ORDER BY id_turno DESC";
+// 🔹 Ahora obtenemos el precio desde la tabla servicios
+$sql = "SELECT id_turno, nombre_usuario, apellido_usuario, vehiculo_matricula, servicio, fecha, estado, precio 
+        FROM vista_turnos 
+        JOIN servicios ON vista_turnos.servicio = servicios.nombre
+        ORDER BY id_turno DESC";
+
 $result = $conn->query($sql);
 
 $html = "";
@@ -29,6 +33,7 @@ if ($result->num_rows > 0) {
         $html .= "<td>{$row['servicio']}</td>";
         $html .= "<td>{$row['fecha']}</td>";
         $html .= "<td>{$row['estado']}</td>";
+        $html .= "<td>$" . number_format($row['precio'], 2, ',', '.') . "</td>"; // Formato de precio
         $html .= "<td>
             <button class='action-btn edit' onclick=\"editarTurno({$row['id_turno']})\">Editar</button>
             <button class='action-btn delete' onclick=\"eliminarTurno({$row['id_turno']})\">Eliminar</button>
@@ -37,11 +42,10 @@ if ($result->num_rows > 0) {
         $count++;
     }
 } else {
-    $html .= "<tr><td colspan='8'>No hay turnos registrados</td></tr>";
+    $html .= "<tr><td colspan='9'>No hay turnos registrados</td></tr>";
 }
 
 $conn->close();
 
-// 🔹 Devolvemos tanto `html` como `count` en la respuesta
-echo json_encode(["html" => $html, "count" => $count]); 
+echo json_encode(["html" => $html, "count" => $count]);
 ?>

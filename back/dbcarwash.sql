@@ -10,19 +10,25 @@ CREATE TABLE personas (
   apellido VARCHAR(100) NOT NULL,
   telefono VARCHAR(20),
   correo VARCHAR(100) UNIQUE,
-  direccion TEXT,
   contrasena VARCHAR(255) NOT NULL,
   rol VARCHAR(10) NOT NULL 
+);
+
+CREATE TABLE marcas (
+  id_marcas BIGINT AUTO_INCREMENT PRIMARY KEY,
+  marca VARCHAR(25) NOT NULL,
+  pais VARCHAR(25) NOT NULL
 );
 
 CREATE TABLE vehiculos (
   id_vehiculo BIGINT AUTO_INCREMENT PRIMARY KEY,
   modelo VARCHAR(50) NOT NULL,
-  marca VARCHAR(50) NOT NULL,
+  id_marca BIGINT NOT NULL,  -- Cambio de 'marca' a 'id_marca'
   matricula VARCHAR(20) NOT NULL UNIQUE,
   tipo VARCHAR(50) NOT NULL,
   id_usuario BIGINT NOT NULL,
-  FOREIGN KEY (id_usuario) REFERENCES personas(id_usuario) ON DELETE CASCADE
+  FOREIGN KEY (id_usuario) REFERENCES personas(id_usuario) ON DELETE CASCADE,
+  FOREIGN KEY (id_marca) REFERENCES marcas(id_marcas)  -- Relación con la tabla 'marcas'
 );
 
 CREATE TABLE servicios (
@@ -38,7 +44,7 @@ CREATE TABLE turnos (
   id_vehiculo BIGINT NOT NULL,
   id_servicio BIGINT NOT NULL,
   fecha DATE NOT NULL,
-  estado ENUM('Nuevo', 'En Proceso', 'Enviado', 'Entregado') NOT NULL,
+  estado ENUM('En Espera', 'En Proceso', 'Listo', 'Entregado') NOT NULL,
   FOREIGN KEY (id_usuario) REFERENCES personas(id_usuario) ON DELETE CASCADE,
   FOREIGN KEY (id_vehiculo) REFERENCES vehiculos(id_vehiculo) ON DELETE CASCADE,
   FOREIGN KEY (id_servicio) REFERENCES servicios(id_servicio) ON DELETE CASCADE
@@ -63,12 +69,6 @@ CREATE TABLE auditoria_turnos (
     descripcion TEXT
 );
 
-CREATE TABLE marcas (
-id_marcar BIGINT AUTO_INCREMENT PRIMARY KEY,
-marca VARCHAR(25) NOT NULL,
-pais VARCHAR(25) NOT NULL
-);
-
 INSERT INTO marcas VALUES(1, "PEUGEOT", "FRANCIA");
 INSERT INTO marcas VALUES(2, "BMW", "ALEMANIA");
 INSERT INTO marcas VALUES(3, "VOLKSWAGEN", "ALEMANIA");
@@ -88,7 +88,7 @@ INSERT INTO marcas VALUES(16, "MERCEDES-BENZ", "ALEMANIA");
 INSERT INTO marcas VALUES(17, "HARLEY-DAVIDSON", "USA");
 INSERT INTO marcas VALUES(18, "CHEVROLET", "USA");
 
-INSERT INTO personas VALUES(1, "ADMIN", "ADMIN", 11111, "admin@admin.com", "admin", "contra123", "admin");
+INSERT INTO personas VALUES(1, "ADMIN", "ADMIN", 11111, "admin@admin.com", "contra123", "admin");
 INSERT INTO servicios VALUES (1, 'Limpieza Interior', 'Aspirado y limpieza profunda.', 50000);
 INSERT INTO servicios VALUES (2, 'Lavado Exterior', 'Incluye lavado y encerado.', 60000);
 INSERT INTO servicios VALUES (3, 'Lavado Completo y Detailing', 'Incluye limpieza interior y exterior.', 100000);
