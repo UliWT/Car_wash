@@ -42,7 +42,7 @@ $marcas_result = $conn->query("SELECT id_marcas, marca FROM marcas");
         </header>
         <main class="main">
             <div class="service-cards">
-                <div class="card" onclick="openForm('1')">
+                <div class="card" onclick="openForm('3')">
                     <img src="complete.png" alt="Lavado Completo">
                     <h2>Lavado Completo y Detailing</h2>
                     <p>Incluye limpieza interior y exterior.</p>
@@ -54,7 +54,7 @@ $marcas_result = $conn->query("SELECT id_marcas, marca FROM marcas");
                     <p>Incluye lavado y encerado.</p>
                     <p class="price">$60,000</p>
                 </div>
-                <div class="card" onclick="openForm('3')">
+                <div class="card" onclick="openForm('1')">
                     <img src="interior.png" alt="Limpieza Interior">
                     <h2>Limpieza Interior</h2>
                     <p>Aspirado y limpieza profunda.</p>
