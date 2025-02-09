@@ -23,7 +23,7 @@ if ($conn->connect_error) {
     die("Error de conexión: " . $conn->connect_error);
 }
 
-$marcas_result = $conn->query("SELECT id_marcas, marca FROM marcas");
+$marcas_result = $conn->query("SELECT id_marca, marca FROM marcas");
 ?>
 
 <!DOCTYPE html>
