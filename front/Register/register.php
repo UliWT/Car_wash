@@ -17,14 +17,13 @@ if ($conn->connect_error) {
 // Recoger datos del formulario
 $nombre = $_POST['nombre'];
 $apellido = $_POST['apellido'];
-$direccion = $_POST['direccion'];
 $correo = $_POST['correo'];
 $telefono = $_POST['telefono'];
 $contrasena = md5($_POST['contrasena']); // Encriptar la contraseña
 
 // Preparar y ejecutar la consulta SQL
-$sql = "INSERT INTO personas (nombre, apellido, direccion, correo, telefono, contrasena)
-VALUES ('$nombre', '$apellido', '$direccion', '$correo', '$telefono', '$contrasena')";
+$sql = "INSERT INTO personas (nombre, apellido, correo, telefono, contrasena)
+VALUES ('$nombre', '$apellido', '$correo', '$telefono', '$contrasena')";
 
 if ($conn->query($sql) === TRUE) {
     echo "Registro exitoso";

@@ -11,6 +11,19 @@ if (!isset($_SESSION['id_usuario'])) {
 
 // Obtener el ID del usuario de la sesión
 $id_usuario = $_SESSION['id_usuario'];
+
+// Conexión a la base de datos para obtener las marcas
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "dbcarwash";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+if ($conn->connect_error) {
+    die("Error de conexión: " . $conn->connect_error);
+}
+
+$marcas_result = $conn->query("SELECT id_marcas, marca FROM marcas");
 ?>
 
 <!DOCTYPE html>
@@ -60,7 +73,14 @@ $id_usuario = $_SESSION['id_usuario'];
                 <input type="text" id="modelo" name="modelo" required>
     
                 <label for="marca">Marca del Auto:</label>
-                <input type="text" id="marca" name="marca" required>
+                <select name="marca" id="marca" required>
+                    <option value="">Selecciona una marca</option>
+                    <?php while ($row = $marcas_result->fetch_assoc()) { ?>
+                        <option value="<?php echo $row['id_marcas']; ?>"><?php echo $row['marca']; ?></option>
+                    <?php } ?>
+                </select>
+
+
                 
                 <label for="matricula">Matricula:</label>
                 <input type="text" id="matricula" name="matricula" required>
@@ -99,45 +119,45 @@ $id_usuario = $_SESSION['id_usuario'];
         }
     
         function submitForm(event) {
-    event.preventDefault();
+            event.preventDefault();
 
-    console.log("Enviando formulario...");
+            console.log("Enviando formulario...");
 
-    // Obtener el ID de usuario de PHP
-    let idUsuario = "<?php echo $_SESSION['id_usuario']; ?>";
-    console.log("ID Usuario obtenido:", idUsuario);
+            // Obtener el ID de usuario de PHP
+            let idUsuario = "<?php echo $_SESSION['id_usuario']; ?>";
+            console.log("ID Usuario obtenido:", idUsuario);
 
-    // Asignarlo al campo oculto antes de enviarlo
-    document.getElementById("id_usuario").value = idUsuario;
+            // Asignarlo al campo oculto antes de enviarlo
+            document.getElementById("id_usuario").value = idUsuario;
 
-    // Crear FormData
-    const formData = new FormData(document.getElementById("booking-form"));
+            // Crear FormData
+            const formData = new FormData(document.getElementById("booking-form"));
 
-    // Verificar que los datos están correctamente asignados
-    for (let pair of formData.entries()) {
-        console.log(pair[0] + ': ' + pair[1]);
-    }
+            // Verificar que los datos están correctamente asignados
+            for (let pair of formData.entries()) {
+                console.log(pair[0] + ': ' + pair[1]);
+            }
 
-    fetch("../User/process_booking.php", {
-        method: "POST",
-        body: formData,
-    })
-    .then(response => response.text())
-    .then(text => {
-    console.log("Respuesta del servidor:", text);
-    if (text.toLowerCase().includes("exitoso")) { // Buscar cualquier mensaje que contenga "exitoso"
-        alert("Turno guardado exitosamente.");
-        closeForm();
-    } else {
-        alert("Error al guardar el turno: " + text); // Mostrar el error real del PHP
-    }
-})
-.catch(error => {
-    console.error("Error:", error);
-    alert("Hubo un problema con el envío del turno.");
-});
+            fetch("../User/process_booking.php", {
+                method: "POST",
+                body: formData,
+            })
+            .then(response => response.text())
+            .then(text => {
+                console.log("Respuesta del servidor:", text);
+                if (text.toLowerCase().includes("exitoso")) { // Buscar cualquier mensaje que contenga "exitoso"
+                    alert("Turno guardado exitosamente.");
+                    closeForm();
+                } else {
+                    alert("Error al guardar el turno: " + text); // Mostrar el error real del PHP
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Hubo un problema con el envío del turno.");
+            });
 
-}
+        }
 
     </script>
 </body>
