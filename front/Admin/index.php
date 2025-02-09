@@ -12,6 +12,34 @@
             <h1>Turnos Agendados</h1>
         </header>
         <main class="main">
+            <!-- Filtro de marcas -->
+            <div class="filter-container">
+                <label for="marca-filter">Filtrar por marca:</label>
+                <select id="marca-filter" name="marca">
+                    <option value="">Seleccione una marca</option>
+                    <?php
+                    // Conexión a la base de datos para obtener las marcas
+                    $servername = "localhost";
+                    $username = "root";
+                    $password = "";
+                    $dbname = "dbcarwash";
+                    $conn = new mysqli($servername, $username, $password, $dbname);
+
+                    if ($conn->connect_error) {
+                        die("Error de conexión: " . $conn->connect_error);
+                    }
+
+                    // Obtener todas las marcas
+                    $marcas_result = $conn->query("SELECT id_marcas, marca FROM marcas");
+                    while ($row = $marcas_result->fetch_assoc()) {
+                        echo "<option value='{$row['id_marcas']}'>{$row['marca']}</option>";
+                    }
+                    $conn->close();
+                    ?>
+                </select>
+            </div>
+
+            <!-- Tabla de turnos -->
             <table class="appointments-table">
                 <thead>
                     <tr>
@@ -39,8 +67,12 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         function cargarTurnos() {
+            // Obtener el valor seleccionado del filtro
+            let marcaSeleccionada = $("#marca-filter").val();
+            
+            // Enviar la solicitud AJAX para cargar los turnos filtrados
             $.ajax({
-                url: "admin_dashboard.php?t=" + new Date().getTime(),
+                url: "admin_dashboard.php?marca=" + marcaSeleccionada + "&t=" + new Date().getTime(),
                 type: "GET",
                 dataType: "json",
                 cache: false,
@@ -60,7 +92,14 @@
         }
 
         $(document).ready(function() {
+            // Cargar los turnos al cargar la página
             cargarTurnos();
+            
+            // Configurar el filtro de marca
+            $("#marca-filter").change(function() {
+                cargarTurnos(); // Recargar los turnos cuando se seleccione una marca
+            });
+
             setInterval(cargarTurnos, 2000); // Refrescar cada 2 segundos
         });
 
@@ -164,11 +203,5 @@
             z-index: 1000;
         }
     </style>
-
-    <form action="../Logout/logout.php" method="POST">
-        <button type="submit">Cerrar Sesión</button>
-    </form>
-
-
 </body>
 </html>
