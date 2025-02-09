@@ -23,7 +23,7 @@ CREATE TABLE marcas (
 CREATE TABLE vehiculos (
   id_vehiculo BIGINT AUTO_INCREMENT PRIMARY KEY,
   modelo VARCHAR(50) NOT NULL,
-  id_marca BIGINT NOT NULL,  -- Cambio de 'marca' a 'id_marca'
+  id_marca BIGINT NOT NULL,
   matricula VARCHAR(20) NOT NULL UNIQUE,
   tipo VARCHAR(50) NOT NULL,
   id_usuario BIGINT NOT NULL,
