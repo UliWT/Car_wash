@@ -12,31 +12,45 @@
             <h1>Turnos Agendados</h1>
         </header>
         <main class="main">
-            <!-- Filtro de marcas -->
-            <div class="filter-container">
-                <label for="marca-filter">Filtrar por marca:</label>
-                <select id="marca-filter" name="marca">
-                    <option value="">Seleccione una marca</option>
-                    <?php
-                    // Conexión a la base de datos para obtener las marcas
-                    $servername = "localhost";
-                    $username = "root";
-                    $password = "";
-                    $dbname = "dbcarwash";
-                    $conn = new mysqli($servername, $username, $password, $dbname);
+            <!-- Filtros -->
+            <div class="filters">
+                <!-- Filtro de marcas -->
+                <div class="filter-container">
+                    <label for="marca-filter">Filtrar por marca:</label>
+                    <select id="marca-filter" name="marca">
+                        <option value="">Seleccione una marca</option>
+                        <?php
+                        // Conexión a la base de datos para obtener las marcas
+                        $servername = "localhost";
+                        $username = "root";
+                        $password = "";
+                        $dbname = "dbcarwash";
+                        $conn = new mysqli($servername, $username, $password, $dbname);
 
-                    if ($conn->connect_error) {
-                        die("Error de conexión: " . $conn->connect_error);
-                    }
+                        if ($conn->connect_error) {
+                            die("Error de conexión: " . $conn->connect_error);
+                        }
 
-                    // Obtener todas las marcas
-                    $marcas_result = $conn->query("SELECT id_marcas, marca FROM marcas");
-                    while ($row = $marcas_result->fetch_assoc()) {
-                        echo "<option value='{$row['id_marcas']}'>{$row['marca']}</option>";
-                    }
-                    $conn->close();
-                    ?>
-                </select>
+                        // Obtener todas las marcas
+                        $marcas_result = $conn->query("SELECT id_marcas, marca FROM marcas");
+                        while ($row = $marcas_result->fetch_assoc()) {
+                            echo "<option value='{$row['id_marcas']}'>{$row['marca']}</option>";
+                        }
+                        $conn->close();
+                        ?>
+                    </select>
+                </div>
+
+                <!-- Filtro por fecha -->
+                <div class="filter-container">
+                    <label for="fecha-filter">Filtrar por periodo:</label>
+                    <select id="fecha-filter" name="fecha">
+                        <option value="">Siempre</option>
+                        <option value="1">Último mes</option>
+                        <option value="3">Últimos 3 meses</option>
+                        <option value="6">Últimos 6 meses</option>
+                    </select>
+                </div>
             </div>
 
             <!-- Tabla de turnos -->
@@ -49,10 +63,11 @@
                         <th>Matrícula</th>
                         <th>Marca</th>
                         <th>Modelo</th>
+                        <th>Tipo</th>
                         <th>Servicio</th>
                         <th>Fecha</th>
                         <th>Estado</th>
-                        <th>Precio</th> 
+                        <th>Precio</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -70,9 +85,10 @@
     <script>
         function cargarTurnos() {
             let marcaSeleccionada = $("#marca-filter").val();
+            let periodoSeleccionado = $("#fecha-filter").val();
 
             $.ajax({
-                url: "admin_dashboard.php?marca=" + marcaSeleccionada + "&t=" + new Date().getTime(),
+                url: "admin_dashboard.php?marca=" + marcaSeleccionada + "&periodo=" + periodoSeleccionado + "&t=" + new Date().getTime(),
                 type: "GET",
                 dataType: "json",
                 cache: false,
@@ -94,7 +110,7 @@
         $(document).ready(function() {
             cargarTurnos();  // Cargar turnos al inicio
 
-            $("#marca-filter").change(function() {
+            $("#marca-filter, #fecha-filter").change(function() {
                 cargarTurnos();  // Recargar cuando cambia el filtro
             });
 
@@ -196,11 +212,47 @@
             box-shadow: 0px 0px 10px gray;
             z-index: 1000;
         }
+
+        .filters {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .filter-container {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .appointments-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .appointments-table th, .appointments-table td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        .appointments-table th {
+            background-color: #f4f4f4;
+        }
+
+        .summary {
+            margin-top: 20px;
+        }
+
+        .summary p {
+            font-weight: bold;
+        }
     </style>
 
     <form action="../Logout/logout.php" method="POST">
         <button type="submit">Cerrar Sesión</button>
     </form>
-    
 </body>
 </html>

@@ -130,8 +130,9 @@ SELECT
     p.nombre AS nombre_usuario,
     p.apellido AS apellido_usuario,
     v.matricula AS vehiculo_matricula,
-    v.modelo AS modelo_vehiculo, -- Agregamos el modelo del vehículo
-    m.marca AS marca_vehiculo, -- Agregamos el nombre de la marca
+    v.modelo AS modelo_vehiculo,
+    v.tipo AS tipo_vehiculo,
+    m.marca AS marca_vehiculo,
     s.nombre AS servicio,
     t.fecha,
     t.estado,
@@ -139,5 +140,5 @@ SELECT
 FROM turnos t
 JOIN personas p ON t.id_usuario = p.id_usuario
 JOIN vehiculos v ON t.id_vehiculo = v.id_vehiculo
-JOIN marcas m ON v.id_marca = m.id_marcas -- Unimos con la tabla marcas para obtener el nombre
+JOIN marcas m ON v.id_marca = m.id_marcas
 JOIN servicios s ON t.id_servicio = s.id_servicio;

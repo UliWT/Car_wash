@@ -12,17 +12,25 @@ if ($conn->connect_error) {
     die(json_encode(["status" => "error", "message" => "Error de conexión: " . $conn->connect_error]));
 }
 
-// Filtrar por marca si está seleccionado
+// Filtrar por marca y periodo si están seleccionados
 $marcaFiltro = isset($_GET['marca']) && $_GET['marca'] !== '' ? intval($_GET['marca']) : null;
+$periodoSeleccionado = isset($_GET['periodo']) ? intval($_GET['periodo']) : null;
 
-// Consulta actualizada con todas las relaciones correctas
+// Calcular la fecha de inicio según el periodo seleccionado
+$fechaInicio = null;
+if ($periodoSeleccionado) {
+    $fechaInicio = date("Y-m-d", strtotime("-$periodoSeleccionado months"));
+}
+
+// Consulta actualizada con los filtros de marca y fecha
 $sql = "SELECT 
             t.id_turno, 
             p.nombre AS nombre_usuario, 
             p.apellido AS apellido_usuario, 
             v.matricula, 
             m.marca, 
-            v.modelo, 
+            v.modelo,
+            v.tipo AS tipo_vehiculo, 
             s.nombre AS servicio, 
             t.fecha, 
             t.estado, 
@@ -33,8 +41,19 @@ $sql = "SELECT
         JOIN marcas m ON v.id_marca = m.id_marcas
         JOIN servicios s ON t.id_servicio = s.id_servicio";
 
+// Crear array de condiciones WHERE
+$whereClauses = [];
+
 if ($marcaFiltro) {
-    $sql .= " WHERE v.id_marca = $marcaFiltro";
+    $whereClauses[] = "v.id_marca = $marcaFiltro";
+}
+
+if ($fechaInicio) {
+    $whereClauses[] = "t.fecha >= '$fechaInicio'";
+}
+
+if (count($whereClauses) > 0) {
+    $sql .= " WHERE " . implode(" AND ", $whereClauses);
 }
 
 $sql .= " ORDER BY t.id_turno DESC";
@@ -54,6 +73,7 @@ if ($result->num_rows > 0) {
                     <td>{$row['matricula']}</td>
                     <td>{$row['marca']}</td>
                     <td>{$row['modelo']}</td>
+                    <td>{$row['tipo_vehiculo']}</td>
                     <td>{$row['servicio']}</td>
                     <td>{$row['fecha']}</td>
                     <td>{$row['estado']}</td>
