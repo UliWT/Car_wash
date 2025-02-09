@@ -24,7 +24,7 @@ if (!isset($_SESSION['id_usuario'])) {
 
 $id_usuario = $_SESSION['id_usuario'];
 $modelo = $_POST['modelo'];
-$marca = $_POST['marca']; // Recibir id_marca
+$marca = $_POST['marca']; // ID de la marca
 $matricula = $_POST['matricula'];
 $tipo = $_POST['tipo'];
 $fecha = $_POST['fecha'];
@@ -40,6 +40,9 @@ if (empty($marca)) {
     die(json_encode(["status" => "error", "message" => "Marca no seleccionada."]));
 }
 
+// Depuración: Verificar si se recibe correctamente la marca
+error_log("ID Marca recibido: " . $marca);
+
 // Verificar si el vehículo ya existe
 $stmt = $conn->prepare("SELECT id_vehiculo FROM vehiculos WHERE matricula = ?");
 $stmt->bind_param("s", $matricula);
@@ -53,7 +56,7 @@ if ($result->num_rows > 0) {
 } else {
     // Si no existe, insertarlo
     $stmt = $conn->prepare("INSERT INTO vehiculos (modelo, id_marca, matricula, tipo, id_usuario) VALUES (?, ?, ?, ?, ?)");
-    $stmt->bind_param("ssssi", $modelo, $marca, $matricula, $tipo, $id_usuario);
+    $stmt->bind_param("sissi", $modelo, $marca, $matricula, $tipo, $id_usuario);
     
     if (!$stmt->execute()) {
         die(json_encode(["status" => "error", "message" => "Error al registrar el vehículo: " . $stmt->error]));

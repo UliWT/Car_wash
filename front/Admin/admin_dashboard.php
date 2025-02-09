@@ -12,7 +12,7 @@ if ($conn->connect_error) {
     die(json_encode(["error" => "Error en la conexión: " . $conn->connect_error]));
 }
 
-// 🔹 Ahora obtenemos el precio desde la tabla servicios
+// Ahora obtenemos el precio desde la tabla servicios
 $sql = "SELECT id_turno, nombre_usuario, apellido_usuario, vehiculo_matricula, servicio, fecha, estado, precio 
         FROM vista_turnos 
         JOIN servicios ON vista_turnos.servicio = servicios.nombre
