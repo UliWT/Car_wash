@@ -124,16 +124,19 @@ END$$
 
 DELIMITER ;
 
-CREATE OR REPLACE VIEW vista_turnos AS
-SELECT 
+CREATE VIEW vista_turnos AS
+SELECT
     t.id_turno,
     p.nombre AS nombre_usuario,
     p.apellido AS apellido_usuario,
     v.matricula AS vehiculo_matricula,
     s.nombre AS servicio,
     t.fecha,
-    t.estado
+    t.estado,
+    s.precio,
+    v.id_marca  -- Cambié a id_marca
 FROM turnos t
-JOIN personas p ON t.id_usuario = p.id_usuario
+JOIN personas p ON t.id_usuario = p.id_usuario  -- Cambié a personas
 JOIN vehiculos v ON t.id_vehiculo = v.id_vehiculo
 JOIN servicios s ON t.id_servicio = s.id_servicio;
+
