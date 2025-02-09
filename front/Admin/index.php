@@ -200,5 +200,10 @@ $(document).ready(function() {
             z-index: 1000;
         }
     </style>
+
+<form action="../Logout/logout.php" method="POST">
+        <button type="submit">Cerrar Sesión</button>
+    </form>
+    
 </body>
 </html>
