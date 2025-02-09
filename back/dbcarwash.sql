@@ -124,19 +124,20 @@ END$$
 
 DELIMITER ;
 
-CREATE VIEW vista_turnos AS
+CREATE OR REPLACE VIEW vista_turnos AS
 SELECT
     t.id_turno,
     p.nombre AS nombre_usuario,
     p.apellido AS apellido_usuario,
     v.matricula AS vehiculo_matricula,
+    v.modelo AS modelo_vehiculo, -- Agregamos el modelo del vehículo
+    m.marca AS marca_vehiculo, -- Agregamos el nombre de la marca
     s.nombre AS servicio,
     t.fecha,
     t.estado,
-    s.precio,
-    v.id_marca  -- Cambié a id_marca
+    s.precio
 FROM turnos t
-JOIN personas p ON t.id_usuario = p.id_usuario  -- Cambié a personas
+JOIN personas p ON t.id_usuario = p.id_usuario
 JOIN vehiculos v ON t.id_vehiculo = v.id_vehiculo
+JOIN marcas m ON v.id_marca = m.id_marcas -- Unimos con la tabla marcas para obtener el nombre
 JOIN servicios s ON t.id_servicio = s.id_servicio;
-
