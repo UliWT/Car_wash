@@ -66,42 +66,39 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        function cargarTurnos() {
-            // Obtener el valor seleccionado del filtro
-            let marcaSeleccionada = $("#marca-filter").val();
-            
-            // Enviar la solicitud AJAX para cargar los turnos filtrados
-            $.ajax({
-                url: "admin_dashboard.php?marca=" + marcaSeleccionada + "&t=" + new Date().getTime(),
-                type: "GET",
-                dataType: "json",
-                cache: false,
-                success: function(response) {
-                    if (response.html) {
-                        $("#appointments-body").html(response.html);
-                        $("#total-turnos").text(response.count);
-                    } else {
-                        $("#appointments-body").html("<tr><td colspan='9'>No hay turnos registrados</td></tr>");
-                        $("#total-turnos").text(0);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error("Error en AJAX:", error);
-                }
-            });
+function cargarTurnos() {
+    let marcaSeleccionada = $("#marca-filter").val();
+
+    $.ajax({
+        url: "admin_dashboard.php?marca=" + marcaSeleccionada + "&t=" + new Date().getTime(),
+        type: "GET",
+        dataType: "json",
+        cache: false,
+        success: function(response) {
+            if (response.html) {
+                $("#appointments-body").html(response.html);
+                $("#total-turnos").text(response.count);
+            } else {
+                $("#appointments-body").html("<tr><td colspan='9'>No hay turnos registrados</td></tr>");
+                $("#total-turnos").text(0);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("Error en AJAX:", error);
         }
+    });
+}
 
-        $(document).ready(function() {
-            // Cargar los turnos al cargar la página
-            cargarTurnos();
-            
-            // Configurar el filtro de marca
-            $("#marca-filter").change(function() {
-                cargarTurnos(); // Recargar los turnos cuando se seleccione una marca
-            });
+$(document).ready(function() {
+    cargarTurnos();  // Cargar turnos al inicio
 
-            setInterval(cargarTurnos, 2000); // Refrescar cada 2 segundos
-        });
+    $("#marca-filter").change(function() {
+        cargarTurnos();  // Recargar cuando cambia el filtro
+    });
+
+    setInterval(cargarTurnos, 2000); // Refrescar cada 2 segundos
+});
+
 
         function editarTurno(id_turno, fecha, servicio, estado) {
             // Llenar el formulario del popup con los datos actuales del turno
@@ -203,11 +200,5 @@
             z-index: 1000;
         }
     </style>
-
-    <form action="../Logout/logout.php" method="POST">
-        <button type="submit">Cerrar Sesión</button>
-    </form>
-
-
 </body>
 </html>

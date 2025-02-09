@@ -5,7 +5,7 @@ session_start();
 // Verificar si el usuario está autenticado
 if (!isset($_SESSION['id_usuario'])) {
     // Si el usuario no está autenticado, redirigir a la página de inicio de sesión
-    header("Location: ../Login/login.html");
+    header("Location: ../Login/Login.html");
     exit();
 }
 
@@ -23,7 +23,7 @@ if ($conn->connect_error) {
     die("Error de conexión: " . $conn->connect_error);
 }
 
-$marcas_result = $conn->query("SELECT id_marca, marca FROM marcas");
+$marcas_result = $conn->query("SELECT id_marcas, marca FROM marcas");
 ?>
 
 <!DOCTYPE html>
@@ -161,10 +161,8 @@ $marcas_result = $conn->query("SELECT id_marca, marca FROM marcas");
 
     </script>
 
-    
-    <form action="../Logout/logout.php" method="POST">
+<form action="../Logout/logout.php" method="POST">
         <button type="submit">Cerrar Sesión</button>
     </form>
-
 </body>
 </html>
