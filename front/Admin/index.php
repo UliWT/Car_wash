@@ -86,42 +86,64 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         function cargarTurnos() {
-            let marcaSeleccionada = $("#marca-filter").val();
-            let periodoSeleccionado = $("#periodo-filter").val();
+    let marcaSeleccionada = $("#marca-filter").val();
+    let periodoSeleccionado = $("#periodo-filter").val();
 
-            $.ajax({
-                url: "admin_dashboard.php?marca=" + marcaSeleccionada + "&periodo=" + periodoSeleccionado + "&t=" + new Date().getTime(),
-                type: "GET",
-                dataType: "json",
-                cache: false,
-                success: function(response) {
-                    if (response.html) {
-                        $("#appointments-body").html(response.html);
-                        $("#total-turnos").text(response.count);
-                    } else {
-                        $("#appointments-body").html("<tr><td colspan='11'>No hay turnos registrados</td></tr>");
-                        $("#total-turnos").text(0);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error("Error en AJAX:", error);
-                }
-            });
+    $.ajax({
+        url: "admin_dashboard.php?marca=" + marcaSeleccionada + "&periodo=" + periodoSeleccionado + "&t=" + new Date().getTime(),
+        type: "GET",
+        dataType: "json",
+        cache: false,
+        success: function(response) {
+            // Manejo de la tabla de turnos
+            if (response.html) {
+                $("#appointments-body").html(response.html);
+                $("#total-turnos").text(response.count);
+            } else {
+                $("#appointments-body").html("<tr><td colspan='11'>No hay turnos registrados</td></tr>");
+                $("#total-turnos").text(0);
+            }
+
+            // Manejo de los valores de recaudación
+            if (response.recaudado_dia !== undefined) {
+                $("#recaudado-dia").text('$' + response.recaudado_dia.toFixed(2));
+            }
+            if (response.recaudado_mes !== undefined) {
+                $("#recaudado-mes").text('$' + response.recaudado_mes.toFixed(2));
+            }
+            if (response.recaudado_3_meses !== undefined) {
+                $("#recaudado-3-meses").text('$' + response.recaudado_3_meses.toFixed(2));
+            }
+            if (response.recaudado_6_meses !== undefined) {
+                $("#recaudado-6-meses").text('$' + response.recaudado_6_meses.toFixed(2));
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("Error en AJAX:", error);
         }
+    });
+}
 
-        $(document).ready(function() {
-            cargarTurnos();  // Cargar turnos al inicio
+$(document).ready(function() {
+    cargarTurnos();  // Cargar turnos al inicio
 
-            $("#marca-filter, #periodo-filter").change(function() {
-                cargarTurnos();  // Recargar cuando cambia el filtro
-            });
+    // Recargar los turnos cuando cambian los filtros
+    $("#marca-filter, #periodo-filter").change(function() {
+        cargarTurnos();
+    });
 
+<<<<<<< HEAD
             $("#apply-filters").click(function() {
                 cargarTurnos();
             });
 
             setInterval(cargarTurnos, 2000); // Refrescar cada 2 segundos
         });
+=======
+    // Refrescar cada 2 segundos
+    setInterval(cargarTurnos, 2000);
+});
+>>>>>>> 5d35600c162134eb6165ae85f281a7d0d7bd197c
 
         function editarTurno(id_turno, fecha, servicio, estado) {
             $("#edit-id_turno").val(id_turno);
@@ -243,6 +265,7 @@
         .logout-form {
             margin: 0;
         }
+<<<<<<< HEAD
         .popup {
         display: none;
         position: fixed;
@@ -394,5 +417,186 @@
     background-color: #2d7a72;
 }
 </style>
+=======
+
+        .logout-form button {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+
+        .logout-form button:hover {
+            background-color: #d32f2f;
+        }
+        .total-turnos {
+ font-size: 1.2em;
+ color: #333;
+ text-align: center;
+ background-color: #f0f8ff;
+ padding: 10px;
+ border: 1px solid #ddd;
+ border-radius: 8px;
+ margin-top: 20px;
+}
+
+#total-turnos {
+ font-size: 1.2em;
+ color: #333;
+ text-align: center;
+ background-color: #3fada8;
+ padding: 10px;
+ border: 1px solid #ddd;
+ border-radius: 8px;
+ margin-top: 20px;
+}
+.filter-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 15px;
+    margin-bottom: 20px;
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.filter-container label {
+    font-weight: bold;
+    color: #333;
+    margin-right: 5px;
+}
+
+.filter-container select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    background-color: #fff;
+    color: #333;
+}
+
+.filter-container select:hover {
+    border-color: #3fada8;
+}
+
+.filter-container button {
+    padding: 8px 12px;
+    background-color: #3fada8;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.filter-container button:hover {
+    background-color: #358e85;
+}
+
+.filter-container button:active {
+    background-color: #2d7a72;
+    transform: scale(0.98);
+}  
+    .popup {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+    }
+
+    /* Contenido del popup */
+    .popup-content {
+        background: #ffffff;
+        padding: 20px 30px;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 500px;
+        position: relative;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+    /* Animación de entrada */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: scale(0.9);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    /* Botón para cerrar el popup */
+    .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 18px;
+        font-weight: bold;
+        color: #555;
+        cursor: pointer;
+    }
+
+    .close-btn:hover {
+        color: #f44336;
+    }
+
+    /* Encabezado del popup */
+    .popup-content h2 {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+        color: #333;
+        text-align: center;
+    }
+
+    /* Estilos de los formularios dentro del popup */
+    #editTurnoForm {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    #editTurnoForm label {
+        font-size: 0.9rem;
+        color: #555;
+    }
+
+    #editTurnoForm input,
+    #editTurnoForm select {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 1rem;
+    }
+
+    #editTurnoForm button {
+        background: #3fada8;
+        color: #fff;
+        font-weight: bold;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background 0.3s ease-in-out;
+    }
+
+    #editTurnoForm button:hover {
+        background: #329d91;
+    }
+    </style>
+>>>>>>> 5d35600c162134eb6165ae85f281a7d0d7bd197c
 </body>
 </html>

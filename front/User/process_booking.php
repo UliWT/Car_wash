@@ -86,13 +86,26 @@ try {
     $stmt->bind_param("iiis", $id_usuario, $id_vehiculo, $id_servicio, $fecha);
 
     if ($stmt->execute()) {
-        // Confirmar transacción antes de responder
-        $conn->commit();
-        echo json_encode([
-            "status" => "success",
-            "message" => "Registro de turno exitoso",
-            "precio" => number_format($precio_servicio, 2, ',', '.')
-        ]);
+        // Obtener el ID del turno insertado
+        $id_turno = $conn->insert_id;
+
+        // Insertar el pago
+        $stmt_pago = $conn->prepare("INSERT INTO pagos (id_usuario, id_turno, monto_total, fecha) VALUES (?, ?, ?, NOW())");
+        $stmt_pago->bind_param("iid", $id_usuario, $id_turno, $precio_servicio); // "i" para id_usuario y id_turno, "d" para monto_total
+
+        if ($stmt_pago->execute()) {
+            // Confirmar transacción antes de responder
+            $conn->commit();
+            echo json_encode([
+                "status" => "success",
+                "message" => "Registro de turno y pago exitoso",
+                "precio" => number_format($precio_servicio, 2, ',', '.')
+            ]);
+        } else {
+            // Rollback si el pago no se inserta correctamente
+            $conn->rollback();
+            echo json_encode(["status" => "error", "message" => "Error al registrar el pago: " . $stmt_pago->error]);
+        }
     } else {
         $conn->rollback();
         echo json_encode(["status" => "error", "message" => "Error en la reserva: " . $stmt->error]);
@@ -105,5 +118,6 @@ try {
 
 // Cerrar conexiones
 $stmt->close();
+$stmt_pago->close();
 $conn->close();
 ?>

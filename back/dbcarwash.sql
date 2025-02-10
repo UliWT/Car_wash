@@ -44,7 +44,7 @@ CREATE TABLE turnos (
   id_vehiculo BIGINT NOT NULL,
   id_servicio BIGINT NOT NULL,
   fecha DATE NOT NULL,
-  estado ENUM('En Espera', 'En Proceso', 'Listo', 'Entregado') NOT NULL,
+  estado ENUM('En Espera', 'En Proceso', 'Listo', 'Cancelado') NOT NULL,
   FOREIGN KEY (id_usuario) REFERENCES personas(id_usuario) ON DELETE CASCADE,
   FOREIGN KEY (id_vehiculo) REFERENCES vehiculos(id_vehiculo) ON DELETE CASCADE,
   FOREIGN KEY (id_servicio) REFERENCES servicios(id_servicio) ON DELETE CASCADE
@@ -89,12 +89,17 @@ INSERT INTO marcas VALUES(17, "HARLEY-DAVIDSON", "USA");
 INSERT INTO marcas VALUES(18, "CHEVROLET", "USA");
 
 INSERT INTO personas VALUES(1, "ADMIN", "ADMIN", 11111, "admin@admin.com", "contra123", "admin");
+INSERT INTO personas VALUES(2, "Jairo", "Lopez", 2617145561, "jairolopezcabrera18@gmail.com", "123", "user");
 INSERT INTO servicios VALUES (1, 'Limpieza Interior', 'Aspirado y limpieza profunda.', 50000);
 INSERT INTO servicios VALUES (2, 'Lavado Exterior', 'Incluye lavado y encerado.', 60000);
 INSERT INTO servicios VALUES (3, 'Lavado Completo y Detailing', 'Incluye limpieza interior y exterior.', 100000);
 UPDATE personas
 SET contrasena = MD5('contra123')
 WHERE id_usuario = 1;
+
+UPDATE personas
+SET contrasena = MD5('123')
+WHERE id_usuario = 2;
 
 DELIMITER $$
 
@@ -141,4 +146,13 @@ FROM turnos t
 JOIN personas p ON t.id_usuario = p.id_usuario
 JOIN vehiculos v ON t.id_vehiculo = v.id_vehiculo
 JOIN marcas m ON v.id_marca = m.id_marcas
+JOIN servicios s ON t.id_servicio = s.id_servicio;
+
+CREATE VIEW pago AS
+SELECT 
+    t.id_turno, 
+    t.id_usuario, 
+    t.fecha, 
+    s.precio
+FROM turnos t
 JOIN servicios s ON t.id_servicio = s.id_servicio;
