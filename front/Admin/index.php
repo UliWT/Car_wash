@@ -21,16 +21,16 @@
         <main class="main">
             <!-- Filtro de marcas -->
             <div class="filter-container">
-                <label for="marca-filter">Filtrar por marca:</label>
-                <select id="marca-filter" name="marca">
-                    <option value="">Seleccione una marca</option>
-                    <?php
-                    // Conexión a la base de datos para obtener las marcas
-                    $servername = "localhost";
-                    $username = "root";
-                    $password = "";
-                    $dbname = "dbcarwash";
-                    $conn = new mysqli($servername, $username, $password, $dbname);
+    <label for="marca-filter">Filtrar por marca:</label>
+    <select id="marca-filter" name="marca">
+        <option value="">Todas</option>
+        <?php
+        // Conexión a la base de datos para obtener las marcas
+        $servername = "localhost";
+        $username = "root";
+        $password = "";
+        $dbname = "dbcarwash";
+        $conn = new mysqli($servername, $username, $password, $dbname);
 
         if ($conn->connect_error) {
             die("Error de conexión: " . $conn->connect_error);
@@ -45,16 +45,15 @@
         ?>
     </select>
 
-                <label for="periodo-filter">Filtrar por período:</label>
-                    <select id="periodo-filter" name="periodo">
-                        <option value="">Seleccione un período</option>
-                        <option value="1">Último mes</option>
-                        <option value="3">Últimos 3 meses</option>
-                        <option value="6">Últimos 6 meses</option>
-                        <option value="12">Último año</option>
-                    </select>
-
-            </div>
+    <label for="periodo-filter">Filtrar por período:</label>
+    <select id="periodo-filter" name="periodo">
+        <option value="">Todos</option>
+        <option value="1">Último mes</option>
+        <option value="3">Últimos 3 meses</option>
+        <option value="6">Últimos 6 meses</option>
+        <option value="12">Último año</option>
+    </select>
+</div>
 
             <!-- Tabla de turnos -->
             <table class="appointments-table">
