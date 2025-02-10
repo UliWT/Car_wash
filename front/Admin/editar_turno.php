@@ -1,36 +1,34 @@
 <?php
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $servername = "localhost";
-    $username = "root";
-    $password = "";
-    $dbname = "dbcarwash";
+// Conexión a la base de datos
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "dbcarwash";
+$conn = new mysqli($servername, $username, $password, $dbname);
 
-    $conn = new mysqli($servername, $username, $password, $dbname);
+if ($conn->connect_error) {
+    die("Error de conexión: " . $conn->connect_error);
+}
 
-    if ($conn->connect_error) {
-        die(json_encode(["status" => "error", "message" => "Error de conexión"]));
-    }
-
-    if (!isset($_POST['id_turno']) || !isset($_POST['fecha']) || !isset($_POST['estado']) || !isset($_POST['servicio'])) {
-        die(json_encode(["status" => "error", "message" => "Faltan datos requeridos"]));
-    }
-
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id_turno = $_POST['id_turno'];
-    $nueva_fecha = $_POST['fecha'];
-    $nuevo_estado = $_POST['estado'];
-    $nuevo_servicio = $_POST['servicio'];  // Campo servicio agregado
+    $id_servicio = $_POST['id_servicio']; // Asegúrate de enviar el id_servicio
+    $estado = $_POST['estado'];
+    $fecha = $_POST['fecha'];
 
-    // Actualización de turno, incluyendo el campo servicio
-    $stmt = $conn->prepare("UPDATE turnos SET fecha = ?, estado = ?, servicio = ? WHERE id_turno = ?");
-    $stmt->bind_param("sssi", $nueva_fecha, $nuevo_estado, $nuevo_servicio, $id_turno);
+    // Consulta para actualizar el turno
+    $sql = "UPDATE turnos SET id_servicio = ?, estado = ?, fecha = ? WHERE id_turno = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("issi", $id_servicio, $estado, $fecha, $id_turno);
 
     if ($stmt->execute()) {
-        echo json_encode(["status" => "success", "message" => "Turno actualizado correctamente"]);
+        echo json_encode(['status' => 'success']);
     } else {
-        echo json_encode(["status" => "error", "message" => "Error al actualizar el turno"]);
+        echo json_encode(['status' => 'error', 'message' => 'No se pudo actualizar el turno']);
     }
-
     $stmt->close();
     $conn->close();
+} else {
+    echo json_encode(['status' => 'error', 'message' => 'Método no permitido']);
 }
 ?>

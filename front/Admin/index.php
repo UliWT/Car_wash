@@ -12,45 +12,31 @@
             <h1>Turnos Agendados</h1>
         </header>
         <main class="main">
-            <!-- Filtros -->
-            <div class="filters">
-                <!-- Filtro de marcas -->
-                <div class="filter-container">
-                    <label for="marca-filter">Filtrar por marca:</label>
-                    <select id="marca-filter" name="marca">
-                        <option value="">Seleccione una marca</option>
-                        <?php
-                        // Conexión a la base de datos para obtener las marcas
-                        $servername = "localhost";
-                        $username = "root";
-                        $password = "";
-                        $dbname = "dbcarwash";
-                        $conn = new mysqli($servername, $username, $password, $dbname);
+            <!-- Filtro de marcas -->
+            <div class="filter-container">
+                <label for="marca-filter">Filtrar por marca:</label>
+                <select id="marca-filter" name="marca">
+                    <option value="">Seleccione una marca</option>
+                    <?php
+                    // Conexión a la base de datos para obtener las marcas
+                    $servername = "localhost";
+                    $username = "root";
+                    $password = "";
+                    $dbname = "dbcarwash";
+                    $conn = new mysqli($servername, $username, $password, $dbname);
 
-                        if ($conn->connect_error) {
-                            die("Error de conexión: " . $conn->connect_error);
-                        }
+                    if ($conn->connect_error) {
+                        die("Error de conexión: " . $conn->connect_error);
+                    }
 
-                        // Obtener todas las marcas
-                        $marcas_result = $conn->query("SELECT id_marcas, marca FROM marcas");
-                        while ($row = $marcas_result->fetch_assoc()) {
-                            echo "<option value='{$row['id_marcas']}'>{$row['marca']}</option>";
-                        }
-                        $conn->close();
-                        ?>
-                    </select>
-                </div>
-
-                <!-- Filtro por fecha -->
-                <div class="filter-container">
-                    <label for="fecha-filter">Filtrar por periodo:</label>
-                    <select id="fecha-filter" name="fecha">
-                        <option value="">Siempre</option>
-                        <option value="1">Último mes</option>
-                        <option value="3">Últimos 3 meses</option>
-                        <option value="6">Últimos 6 meses</option>
-                    </select>
-                </div>
+                    // Obtener todas las marcas
+                    $marcas_result = $conn->query("SELECT id_marcas, marca FROM marcas");
+                    while ($row = $marcas_result->fetch_assoc()) {
+                        echo "<option value='{$row['id_marcas']}'>{$row['marca']}</option>";
+                    }
+                    $conn->close();
+                    ?>
+                </select>
             </div>
 
             <!-- Tabla de turnos -->
@@ -67,7 +53,7 @@
                         <th>Servicio</th>
                         <th>Fecha</th>
                         <th>Estado</th>
-                        <th>Precio</th>
+                        <th>Precio</th> 
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -85,10 +71,9 @@
     <script>
         function cargarTurnos() {
             let marcaSeleccionada = $("#marca-filter").val();
-            let periodoSeleccionado = $("#fecha-filter").val();
 
             $.ajax({
-                url: "admin_dashboard.php?marca=" + marcaSeleccionada + "&periodo=" + periodoSeleccionado + "&t=" + new Date().getTime(),
+                url: "admin_dashboard.php?marca=" + marcaSeleccionada + "&t=" + new Date().getTime(),
                 type: "GET",
                 dataType: "json",
                 cache: false,
@@ -110,7 +95,7 @@
         $(document).ready(function() {
             cargarTurnos();  // Cargar turnos al inicio
 
-            $("#marca-filter, #fecha-filter").change(function() {
+            $("#marca-filter").change(function() {
                 cargarTurnos();  // Recargar cuando cambia el filtro
             });
 
@@ -120,8 +105,26 @@
         function editarTurno(id_turno, fecha, servicio, estado) {
             $("#edit-id_turno").val(id_turno);
             $("#edit-fecha").val(fecha);
-            $("#edit-servicio").val(servicio);
             $("#edit-estado").val(estado);
+
+            // Cargar servicios desde admin_dashboard.php
+            $.ajax({
+                url: "admin_dashboard.php?get_servicios=1",
+                type: "GET",
+                dataType: "json",
+                success: function(response) {
+                    $("#edit-servicio").empty();
+                    response.servicios.forEach(function(serv) {
+                        $("#edit-servicio").append(
+                            `<option value="${serv.id_servicio}" ${serv.id_servicio == servicio ? "selected" : ""}>${serv.nombre}</option>`
+                        );
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error en AJAX:", error);
+                }
+            });
+
             $("#editPopup").show();
         }
 
@@ -185,7 +188,7 @@
                 <input type="date" id="edit-fecha" name="fecha" required>
 
                 <label for="edit-servicio">Servicio:</label>
-                <input type="text" id="edit-servicio" name="servicio" required>
+                <select id="edit-servicio" name="id_servicio" required></select>
 
                 <label for="edit-estado">Estado:</label>
                 <select id="edit-estado" name="estado">
@@ -211,43 +214,6 @@
             padding: 20px;
             box-shadow: 0px 0px 10px gray;
             z-index: 1000;
-        }
-
-        .filters {
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-        }
-
-        .filter-container {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .appointments-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        .appointments-table th, .appointments-table td {
-            padding: 10px;
-            text-align: left;
-            border: 1px solid #ddd;
-        }
-
-        .appointments-table th {
-            background-color: #f4f4f4;
-        }
-
-        .summary {
-            margin-top: 20px;
-        }
-
-        .summary p {
-            font-weight: bold;
         }
     </style>
 
