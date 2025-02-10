@@ -23,7 +23,7 @@
             <div class="filter-container">
                 <label for="marca-filter">Filtrar por marca:</label>
                 <select id="marca-filter" name="marca" class="filter-select">
-                    <option value="">Seleccione una marca</option>
+                    <option value="">Todas</option>
                     <?php
                     // Conexión a la base de datos para obtener las marcas
                     $servername = "localhost";
@@ -47,7 +47,7 @@
 
                 <label for="periodo-filter">Filtrar por período:</label>
                 <select id="periodo-filter" name="periodo" class="filter-select">
-                    <option value="">Seleccione un período</option>
+                    <option value="">Todos los turnos</option>
                     <option value="1">Último mes</option>
                     <option value="3">Últimos 3 meses</option>
                     <option value="6">Últimos 6 meses</option>
