@@ -147,3 +147,12 @@ JOIN personas p ON t.id_usuario = p.id_usuario
 JOIN vehiculos v ON t.id_vehiculo = v.id_vehiculo
 JOIN marcas m ON v.id_marca = m.id_marcas
 JOIN servicios s ON t.id_servicio = s.id_servicio;
+
+CREATE VIEW pago AS
+SELECT 
+    t.id_turno, 
+    t.id_usuario, 
+    t.fecha, 
+    s.precio
+FROM turnos t
+JOIN servicios s ON t.id_servicio = s.id_servicio;

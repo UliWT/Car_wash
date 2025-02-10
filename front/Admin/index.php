@@ -86,38 +86,55 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         function cargarTurnos() {
-            let marcaSeleccionada = $("#marca-filter").val();
-            let periodoSeleccionado = $("#periodo-filter").val();
+    let marcaSeleccionada = $("#marca-filter").val();
+    let periodoSeleccionado = $("#periodo-filter").val();
 
-            $.ajax({
-                url: "admin_dashboard.php?marca=" + marcaSeleccionada + "&periodo=" + periodoSeleccionado + "&t=" + new Date().getTime(),
-                type: "GET",
-                dataType: "json",
-                cache: false,
-                success: function(response) {
-                    if (response.html) {
-                        $("#appointments-body").html(response.html);
-                        $("#total-turnos").text(response.count);
-                    } else {
-                        $("#appointments-body").html("<tr><td colspan='11'>No hay turnos registrados</td></tr>");
-                        $("#total-turnos").text(0);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error("Error en AJAX:", error);
-                }
-            });
+    $.ajax({
+        url: "admin_dashboard.php?marca=" + marcaSeleccionada + "&periodo=" + periodoSeleccionado + "&t=" + new Date().getTime(),
+        type: "GET",
+        dataType: "json",
+        cache: false,
+        success: function(response) {
+            // Manejo de la tabla de turnos
+            if (response.html) {
+                $("#appointments-body").html(response.html);
+                $("#total-turnos").text(response.count);
+            } else {
+                $("#appointments-body").html("<tr><td colspan='11'>No hay turnos registrados</td></tr>");
+                $("#total-turnos").text(0);
+            }
+
+            // Manejo de los valores de recaudación
+            if (response.recaudado_dia !== undefined) {
+                $("#recaudado-dia").text('$' + response.recaudado_dia.toFixed(2));
+            }
+            if (response.recaudado_mes !== undefined) {
+                $("#recaudado-mes").text('$' + response.recaudado_mes.toFixed(2));
+            }
+            if (response.recaudado_3_meses !== undefined) {
+                $("#recaudado-3-meses").text('$' + response.recaudado_3_meses.toFixed(2));
+            }
+            if (response.recaudado_6_meses !== undefined) {
+                $("#recaudado-6-meses").text('$' + response.recaudado_6_meses.toFixed(2));
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("Error en AJAX:", error);
         }
+    });
+}
 
-        $(document).ready(function() {
-            cargarTurnos();  // Cargar turnos al inicio
+$(document).ready(function() {
+    cargarTurnos();  // Cargar turnos al inicio
 
-            $("#marca-filter, #periodo-filter").change(function() {
-                cargarTurnos();  // Recargar cuando cambia el filtro
-            });
+    // Recargar los turnos cuando cambian los filtros
+    $("#marca-filter, #periodo-filter").change(function() {
+        cargarTurnos();
+    });
 
-            setInterval(cargarTurnos, 2000); // Refrescar cada 2 segundos
-        });
+    // Refrescar cada 2 segundos
+    setInterval(cargarTurnos, 2000);
+});
 
         function editarTurno(id_turno, fecha, servicio, estado) {
             $("#edit-id_turno").val(id_turno);
