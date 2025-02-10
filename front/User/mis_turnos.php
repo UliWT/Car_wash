@@ -170,7 +170,7 @@ $conn->close();
         function cancelarTurno(id) {
             if (confirm("¿Seguro que deseas cancelar el turno " + id + "?")) {
                 $.ajax({
-                    url: "cancelar_turno.php",
+                    url: "../Admin/eliminar_turno.php",
                     type: "POST",
                     data: { id_turno: id },
                     dataType: "json",
