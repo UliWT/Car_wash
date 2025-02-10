@@ -1,21 +1,35 @@
 <?php
 header("Content-Type: application/json");
-require 'db.php'; // Aquí va tu conexión a la BD
 
-$id_turno = filter_input(INPUT_POST, "id_turno", FILTER_VALIDATE_INT);
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "dbcarwash"; // Aquí va tu conexión a la BD
 
-if (!$id_turno) {
-    echo json_encode(["success" => false, "error" => "ID de turno inválido."]);
-    exit;
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+if($conn->connect_error){
+die("Error de conexión: ". $conn->connect_error);
 }
 
-$stmt = $conn->prepare("DELETE FROM turnos WHERE id_turno = ?");
+if (!isset($_SESSION['id_usuario'])) {
+    die("Usuario no autenticado.");
+}
+
+$id_turno = $_POST['id_turno']; 
+$id_usuario = $_SESSION['id_usuario']; // Guarda el ID del usuario actual
+
+// Definir la variable en la sesión SQL
+$conn->query("SET @current_user_id = $id_usuario");
+
+$sql = "DELETE FROM turnos WHERE id_turno = ?";
+$stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $id_turno);
 
 if ($stmt->execute()) {
     echo json_encode(["success" => true]);
 } else {
-    echo json_encode(["success" => false, "error" => "No se pudo cancelar el turno."]);
+    echo json_encode(["success" => false, "error" => $stmt->error]);
 }
 
 $stmt->close();
