@@ -145,9 +145,9 @@ $marcas_result = $conn->query("SELECT id_marcas, marca FROM marcas");
             .then(response => response.text())
             .then(text => {
                 console.log("Respuesta del servidor:", text);
-                if (text.toLowerCase().includes("exitoso")) { // Buscar cualquier mensaje que contenga "exitoso"
-                    alert("Turno guardado exitosamente.");
-                    closeForm();
+                        if (text.toLowerCase().includes("exitoso")) { // Buscar cualquier mensaje que contenga "exitoso"
+                        alert("Turno guardado exitosamente.");
+                        window.location.href = "mis_turnos.php";
                 } else {
                     alert("Error al guardar el turno: " + text); // Mostrar el error real del PHP
                 }

@@ -15,7 +15,7 @@ body {
 
 .header {
  text-align: center;
- padding: 20px;
+ padding: 21px;
  background-color: #00796b;
  color: white;
  border-radius: 8px;
@@ -139,20 +139,3 @@ body {
  color: white;
 }
 
-#Block1{
-    background-color: #00796b;
-    color: white;
-    padding: 10px;
-    border-radius: 8px;
-    margin-right: 10px;
-    text-decoration: none;
-}
-
-
-#Block2{
-    background-color: #00796b;
-    color: white;
-    width: auto;
-    height: 30px;
-    text-decoration: none;
-}
