@@ -7,6 +7,13 @@
     <link rel="stylesheet" href="styles-admin.css">
 </head>
 <body>
+    <nav class="navbar">
+        <a href="../home.php">Inicio</a>
+        <form action="../Logout/logout.php" method="POST" class="logout-form">
+            <button type="submit">Cerrar Sesión</button>
+        </form>
+    </nav>
+
     <div class="admin-container">
         <header class="header">
             <h1>Turnos Agendados</h1>
@@ -14,40 +21,39 @@
         <main class="main">
             <!-- Filtro de marcas -->
             <div class="filter-container">
-                <label for="marca-filter">Filtrar por marca:</label>
-                <select id="marca-filter" name="marca">
-                    <option value="">Seleccione una marca</option>
-                    <?php
-                    // Conexión a la base de datos para obtener las marcas
-                    $servername = "localhost";
-                    $username = "root";
-                    $password = "";
-                    $dbname = "dbcarwash";
-                    $conn = new mysqli($servername, $username, $password, $dbname);
+    <label for="marca-filter">Filtrar por marca:</label>
+    <select id="marca-filter" name="marca">
+        <option value="">Seleccione una marca</option>
+        <?php
+        // Conexión a la base de datos para obtener las marcas
+        $servername = "localhost";
+        $username = "root";
+        $password = "";
+        $dbname = "dbcarwash";
+        $conn = new mysqli($servername, $username, $password, $dbname);
 
-                    if ($conn->connect_error) {
-                        die("Error de conexión: " . $conn->connect_error);
-                    }
+        if ($conn->connect_error) {
+            die("Error de conexión: " . $conn->connect_error);
+        }
 
-                    // Obtener todas las marcas
-                    $marcas_result = $conn->query("SELECT id_marcas, marca FROM marcas");
-                    while ($row = $marcas_result->fetch_assoc()) {
-                        echo "<option value='{$row['id_marcas']}'>{$row['marca']}</option>";
-                    }
-                    $conn->close();
-                    ?>
-                </select>
+        // Obtener todas las marcas
+        $marcas_result = $conn->query("SELECT id_marcas, marca FROM marcas");
+        while ($row = $marcas_result->fetch_assoc()) {
+            echo "<option value='{$row['id_marcas']}'>{$row['marca']}</option>";
+        }
+        $conn->close();
+        ?>
+    </select>
 
-                <label for="periodo-filter">Filtrar por período:</label>
-                    <select id="periodo-filter" name="periodo">
-                        <option value="">Seleccione un período</option>
-                        <option value="1">Último mes</option>
-                        <option value="3">Últimos 3 meses</option>
-                        <option value="6">Últimos 6 meses</option>
-                        <option value="12">Último año</option>
-                    </select>
-
-            </div>
+    <label for="periodo-filter">Filtrar por período:</label>
+    <select id="periodo-filter" name="periodo">
+        <option value="">Seleccione un período</option>
+        <option value="1">Último mes</option>
+        <option value="3">Últimos 3 meses</option>
+        <option value="6">Últimos 6 meses</option>
+        <option value="12">Último año</option>
+    </select>
+</div>
 
             <!-- Tabla de turnos -->
             <table class="appointments-table">
@@ -72,7 +78,7 @@
                 </tbody>
             </table>
             <div class="summary">
-                <p>Total Turnos: <span id="total-turnos"></span></p>
+                <p class="total-turnos">Total Turnos: <span id="total-turnos"></span></p>
             </div>
         </main>
     </div>
@@ -188,7 +194,7 @@
     </script>
 
     <!-- Popup para editar turnos -->
-    <div id="editPopup" class="popup">
+    <div id="editPopup" class=".popup">
         <div class="popup-content">
             <span class="close-btn" onclick="cerrarPopup()">&times;</span>
             <h2>Editar Turno</h2>
@@ -215,21 +221,202 @@
     </div>
 
     <style>
-        .popup {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 20px;
-            box-shadow: 0px 0px 10px gray;
-            z-index: 1000;
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #3fada8;
+            border-bottom: 2px solid black;
         }
-    </style>
 
-    <form action="../Logout/logout.php" method="POST">
-        <button type="submit">Cerrar Sesión</button>
-    </form>
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .logout-form {
+            margin: 0;
+        }
+
+        .logout-form button {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+
+        .logout-form button:hover {
+            background-color: #d32f2f;
+        }
+        .total-turnos {
+ font-size: 1.2em;
+ color: #333;
+ text-align: center;
+ background-color: #f0f8ff;
+ padding: 10px;
+ border: 1px solid #ddd;
+ border-radius: 8px;
+ margin-top: 20px;
+}
+
+#total-turnos {
+ font-size: 1.2em;
+ color: #333;
+ text-align: center;
+ background-color: #3fada8;
+ padding: 10px;
+ border: 1px solid #ddd;
+ border-radius: 8px;
+ margin-top: 20px;
+}
+.filter-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 15px;
+    margin-bottom: 20px;
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.filter-container label {
+    font-weight: bold;
+    color: #333;
+    margin-right: 5px;
+}
+
+.filter-container select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    background-color: #fff;
+    color: #333;
+}
+
+.filter-container select:hover {
+    border-color: #3fada8;
+}
+
+.filter-container button {
+    padding: 8px 12px;
+    background-color: #3fada8;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.filter-container button:hover {
+    background-color: #358e85;
+}
+
+.filter-container button:active {
+    background-color: #2d7a72;
+    transform: scale(0.98);
+}  
+    .popup {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+    }
+
+    /* Contenido del popup */
+    .popup-content {
+        background: #ffffff;
+        padding: 20px 30px;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 500px;
+        position: relative;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+    /* Animación de entrada */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: scale(0.9);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    /* Botón para cerrar el popup */
+    .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 18px;
+        font-weight: bold;
+        color: #555;
+        cursor: pointer;
+    }
+
+    .close-btn:hover {
+        color: #f44336;
+    }
+
+    /* Encabezado del popup */
+    .popup-content h2 {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+        color: #333;
+        text-align: center;
+    }
+
+    /* Estilos de los formularios dentro del popup */
+    #editTurnoForm {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    #editTurnoForm label {
+        font-size: 0.9rem;
+        color: #555;
+    }
+
+    #editTurnoForm input,
+    #editTurnoForm select {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 1rem;
+    }
+
+    #editTurnoForm button {
+        background: #3fada8;
+        color: #fff;
+        font-weight: bold;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background 0.3s ease-in-out;
+    }
+
+    #editTurnoForm button:hover {
+        background: #329d91;
+    }
+    </style>
 </body>
 </html>

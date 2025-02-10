@@ -52,61 +52,67 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mis Turnos</title>
-    <link rel="stylesheet" href="../User/styles.css">
+    <link rel="stylesheet" href="styles-turnos.css">
+    <link rel="stylesheet" href="styles-menu.css"> <!-- Conexión con CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"> <!-- FontAwesome -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
 
-    <div class="user-container">
-        <header class="header">
-            <h1>Mis Turnos</h1>
-        </header>
-        <main class="main">
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Usuario</th>
-                        <th>Matrícula</th>
-                        <th>Servicio</th>
-                        <th>Precio</th>
-                        <th>Fecha</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody id="turnos-body">
-                    <?php if (empty($turnos)): ?>
-                        <tr><td colspan="8">No tienes turnos registrados.</td></tr>
-                    <?php else: ?>
-                        <?php foreach ($turnos as $turno): ?>
-                            <tr>
-                                <td><?= $turno['id_turno'] ?></td>
-                                <td><?= htmlspecialchars($turno['nombre_usuario']) ?></td>
-                                <td><?= htmlspecialchars($turno['vehiculo_matricula']) ?></td>
-                                <td><?= htmlspecialchars($turno['servicio']) ?></td>
-                                <td>$<?= number_format($turno['precio'], 2) ?></td>
-                                <td><?= $turno['fecha'] ?></td>
-                                <td><?= htmlspecialchars($turno['estado']) ?></td>
-                                <td>
-                                    <button onclick="cancelarTurno(<?= $turno['id_turno'] ?>)">Cancelar</button>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-            <p>Total de turnos: <span id="total-turnos"><?= count($turnos) ?></span></p>
-        </main>
-    </div>
-
+<!-- Navbar -->
+<div class="navbar">
+    <a href="menu.php">
+        <i class="fas fa-home"></i> Inicio
+    </a>
     <form action="../Logout/logout.php" method="POST">
-        <button type="submit">Cerrar Sesión</button>
+        <button type="submit">
+            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+        </button>
     </form>
+</div>
 
-    <form action="../User/menu.php">
-        <button type="submit">Volver atrás</button>
-    </form>  
+<div class="user-container">
+    <header class="header">
+        <h1>Mis Turnos</h1>
+    </header>
+    <main class="main">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Usuario</th>
+                    <th>Matrícula</th>
+                    <th>Servicio</th>
+                    <th>Precio</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="turnos-body">
+                <?php if (empty($turnos)): ?>
+                    <tr><td colspan="8">No tienes turnos registrados.</td></tr>
+                <?php else: ?>
+                    <?php foreach ($turnos as $turno): ?>
+                        <tr>
+                            <td><?= $turno['id_turno'] ?></td>
+                            <td><?= htmlspecialchars($turno['nombre_usuario']) ?></td>
+                            <td><?= htmlspecialchars($turno['vehiculo_matricula']) ?></td>
+                            <td><?= htmlspecialchars($turno['servicio']) ?></td>
+                            <td>$<?= number_format($turno['precio'], 2) ?></td>
+                            <td><?= $turno['fecha'] ?></td>
+                            <td><?= htmlspecialchars($turno['estado']) ?></td>
+                            <td>
+                                <button onclick="cancelarTurno(<?= $turno['id_turno'] ?>)">Cancelar</button>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </tbody>
+        </table>
+        <p class="total-turnos">Total de turnos: <span id="total-turnos"><?= count($turnos) ?></span></p>
+    </main>
+</div>
 
     <script>
     function cancelarTurno(id) {
