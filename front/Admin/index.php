@@ -78,37 +78,50 @@
                 </tbody>
             </table>
             <div class="summary">
-                <p class="total-turnos">Total Turnos: <span id="total-turnos"></span></p>
-            </div>
+     <p class="total-turnos">Total Turnos: <span id="total-turnos"></span></p>
+    <p class="total-precio">Total Precio: <span id="total-precio">$0.00</span></p>
+</div>
         </main>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         function cargarTurnos() {
-            let marcaSeleccionada = $("#marca-filter").val();
-            let periodoSeleccionado = $("#periodo-filter").val();
+    let marcaSeleccionada = $("#marca-filter").val();
+    let periodoSeleccionado = $("#periodo-filter").val();
 
-            $.ajax({
-                url: "admin_dashboard.php?marca=" + marcaSeleccionada + "&periodo=" + periodoSeleccionado + "&t=" + new Date().getTime(),
-                type: "GET",
-                dataType: "json",
-                cache: false,
-                success: function(response) {
-                    if (response.html) {
-                        $("#appointments-body").html(response.html);
-                        $("#total-turnos").text(response.count);
-                    } else {
-                        $("#appointments-body").html("<tr><td colspan='11'>No hay turnos registrados</td></tr>");
-                        $("#total-turnos").text(0);
+    $.ajax({
+        url: "admin_dashboard.php?marca=" + marcaSeleccionada + "&periodo=" + periodoSeleccionado + "&t=" + new Date().getTime(),
+        type: "GET",
+        dataType: "json",
+        cache: false,
+        success: function(response) {
+            if (response.html) {
+                $("#appointments-body").html(response.html);
+                $("#total-turnos").text(response.count);
+
+                // Calcular el total del precio
+                let totalPrecio = 0;
+                $("#appointments-body tr").each(function() {
+                    let precio = parseFloat($(this).find("td:nth-child(11)").text().replace("$", "").trim());
+                    if (!isNaN(precio)) {
+                        totalPrecio += precio;
                     }
-                },
-                error: function(xhr, status, error) {
-                    console.error("Error en AJAX:", error);
-                }
-            });
-        }
+                });
 
+                // Mostrar el total del precio
+                $("#total-precio").text("$" + totalPrecio.toFixed(2));
+            } else {
+                $("#appointments-body").html("<tr><td colspan='11'>No hay turnos registrados</td></tr>");
+                $("#total-turnos").text(0);
+                $("#total-precio").text("$0.00");
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("Error en AJAX:", error);
+        }
+    });
+}
         $(document).ready(function() {
             cargarTurnos();  // Cargar turnos al inicio
 

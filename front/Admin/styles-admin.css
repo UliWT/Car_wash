@@ -236,3 +236,18 @@ margin-top: 20px;
         width: 100%;
     }
 }
+
+.total-precio {
+    font-size: 1.2em;
+color: #333;
+text-align: center;
+background-color: #3fada8;
+padding: 10px;
+border: 1px solid #ddd;
+border-radius: 8px;
+margin-top: 20px;
+}
+
+.total-precio span {
+    color: #3fada8;
+}
