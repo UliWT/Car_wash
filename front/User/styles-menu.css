@@ -1,0 +1,107 @@
+body {
+ margin: 0;
+ font-family: Arial, sans-serif;
+ background-color: #6ca6a3;
+ color: #333;
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ justify-content: center;
+ height: 100vh;
+}
+
+/* Navbar */
+.navbar {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ background-color: #00796b;
+ padding: 10px 20px;
+ width: 100%;
+ position: fixed;
+ top: 0;
+ left: 0;
+ z-index: 1000;
+}
+
+.navbar a {
+ color: white;
+ text-decoration: none;
+ padding: 10px;
+ font-size: 18px;
+ display: flex;
+ align-items: center;
+}
+
+.navbar a:hover {
+ background-color: #005f56;
+ border-radius: 4px;
+}
+
+.navbar a i {
+ margin-right: 8px; /* Espacio entre el ícono y el texto */
+}
+
+form {
+ margin: 0;
+}
+
+button {
+ background-color: #005f56;
+ color: white;
+ border: none;
+ padding: 10px 20px;
+ border-radius: 8px;
+ cursor: pointer;
+ font-size: 16px;
+ display: flex;
+ align-items: center;
+}
+
+button:hover {
+ background-color: #004d47;
+}
+
+button i {
+ margin-right: 8px; /* Espacio entre el ícono y el texto */
+}
+
+/* Contenedor de las opciones */
+.container {
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ gap: 40px;
+ margin-top: 60px; /* Para evitar que el navbar cubra el contenido */
+}
+
+/* Estilo de las opciones */
+.option {
+ background-color: #00796b;
+ border-radius: 12px;
+ padding: 20px;
+ text-align: center;
+ transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.option:hover {
+ transform: scale(1.05);
+ box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.option img {
+ width: 100px;
+ height: 100px;
+ margin-bottom: 10px;
+}
+
+.option p {
+ color: white;
+ font-size: 18px;
+ margin: 0;
+}
+
+.option a {
+ text-decoration: none;
+ color: inherit;
+}

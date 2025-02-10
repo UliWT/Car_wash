@@ -20,12 +20,11 @@ if (!$id_usuario) {
     die("Usuario no autenticado.");
 }
 
-// Consulta para obtener los turnos del usuario con información detallada
-$sql = "SELECT id_turno, nombre_usuario, apellido_usuario, vehiculo_matricula, servicio, fecha, estado, precio 
+$sql = "SELECT id_turno, nombre_usuario, apellido_usuario, vehiculo_matricula, modelo_vehiculo, marca_vehiculo, servicio, fecha, estado, precio 
         FROM vista_turnos 
-        JOIN servicios ON vista_turnos.servicio = servicios.nombre
-        WHERE vista_turnos.id_usuario = ?
+        WHERE id_turno IN (SELECT id_turno FROM turnos WHERE id_usuario = ?)
         ORDER BY id_turno DESC";
+
 
 // Asegurarse de que $id_usuario esté disponible
 if ($id_usuario) {

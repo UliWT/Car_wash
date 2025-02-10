@@ -47,6 +47,9 @@
                         <th>Nombre</th>
                         <th>Apellido</th>
                         <th>Matrícula</th>
+                        <th>Marca</th>
+                        <th>Modelo</th>
+                        <th>Tipo</th>
                         <th>Servicio</th>
                         <th>Fecha</th>
                         <th>Estado</th>
@@ -66,48 +69,62 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-function cargarTurnos() {
-    let marcaSeleccionada = $("#marca-filter").val();
+        function cargarTurnos() {
+            let marcaSeleccionada = $("#marca-filter").val();
 
-    $.ajax({
-        url: "admin_dashboard.php?marca=" + marcaSeleccionada + "&t=" + new Date().getTime(),
-        type: "GET",
-        dataType: "json",
-        cache: false,
-        success: function(response) {
-            if (response.html) {
-                $("#appointments-body").html(response.html);
-                $("#total-turnos").text(response.count);
-            } else {
-                $("#appointments-body").html("<tr><td colspan='9'>No hay turnos registrados</td></tr>");
-                $("#total-turnos").text(0);
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error("Error en AJAX:", error);
+            $.ajax({
+                url: "admin_dashboard.php?marca=" + marcaSeleccionada + "&t=" + new Date().getTime(),
+                type: "GET",
+                dataType: "json",
+                cache: false,
+                success: function(response) {
+                    if (response.html) {
+                        $("#appointments-body").html(response.html);
+                        $("#total-turnos").text(response.count);
+                    } else {
+                        $("#appointments-body").html("<tr><td colspan='11'>No hay turnos registrados</td></tr>");
+                        $("#total-turnos").text(0);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error en AJAX:", error);
+                }
+            });
         }
-    });
-}
 
-$(document).ready(function() {
-    cargarTurnos();  // Cargar turnos al inicio
+        $(document).ready(function() {
+            cargarTurnos();  // Cargar turnos al inicio
 
-    $("#marca-filter").change(function() {
-        cargarTurnos();  // Recargar cuando cambia el filtro
-    });
+            $("#marca-filter").change(function() {
+                cargarTurnos();  // Recargar cuando cambia el filtro
+            });
 
-    setInterval(cargarTurnos, 2000); // Refrescar cada 2 segundos
-});
-
+            setInterval(cargarTurnos, 2000); // Refrescar cada 2 segundos
+        });
 
         function editarTurno(id_turno, fecha, servicio, estado) {
-            // Llenar el formulario del popup con los datos actuales del turno
             $("#edit-id_turno").val(id_turno);
             $("#edit-fecha").val(fecha);
-            $("#edit-servicio").val(servicio);
             $("#edit-estado").val(estado);
 
-            // Mostrar el popup de edición
+            // Cargar servicios desde admin_dashboard.php
+            $.ajax({
+                url: "admin_dashboard.php?get_servicios=1",
+                type: "GET",
+                dataType: "json",
+                success: function(response) {
+                    $("#edit-servicio").empty();
+                    response.servicios.forEach(function(serv) {
+                        $("#edit-servicio").append(
+                            `<option value="${serv.id_servicio}" ${serv.id_servicio == servicio ? "selected" : ""}>${serv.nombre}</option>`
+                        );
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error en AJAX:", error);
+                }
+            });
+
             $("#editPopup").show();
         }
 
@@ -117,7 +134,7 @@ $(document).ready(function() {
 
         $(document).ready(function() {
             $("#editTurnoForm").submit(function(event) {
-                event.preventDefault(); // Evita la recarga de la página
+                event.preventDefault();
 
                 $.ajax({
                     url: "editar_turno.php",
@@ -125,11 +142,10 @@ $(document).ready(function() {
                     data: $(this).serialize(),
                     dataType: "json",
                     success: function(response) {
-                        console.log("Respuesta del servidor:", response);
                         if (response.status === "success") {
                             alert("Turno actualizado correctamente.");
-                            cerrarPopup(); // Cierra el popup al actualizar correctamente
-                            cargarTurnos(); // Recargar la lista de turnos
+                            cerrarPopup();
+                            cargarTurnos();
                         } else {
                             alert("Error al actualizar: " + response.message);
                         }
@@ -172,7 +188,7 @@ $(document).ready(function() {
                 <input type="date" id="edit-fecha" name="fecha" required>
 
                 <label for="edit-servicio">Servicio:</label>
-                <input type="text" id="edit-servicio" name="servicio" required>
+                <select id="edit-servicio" name="id_servicio" required></select>
 
                 <label for="edit-estado">Estado:</label>
                 <select id="edit-estado" name="estado">
@@ -201,9 +217,8 @@ $(document).ready(function() {
         }
     </style>
 
-<form action="../Logout/logout.php" method="POST">
+    <form action="../Logout/logout.php" method="POST">
         <button type="submit">Cerrar Sesión</button>
     </form>
-    
 </body>
 </html>
