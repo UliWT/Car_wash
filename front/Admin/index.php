@@ -37,6 +37,16 @@
                     $conn->close();
                     ?>
                 </select>
+
+                <label for="periodo-filter">Filtrar por período:</label>
+                    <select id="periodo-filter" name="periodo">
+                        <option value="">Seleccione un período</option>
+                        <option value="1">Último mes</option>
+                        <option value="3">Últimos 3 meses</option>
+                        <option value="6">Últimos 6 meses</option>
+                        <option value="12">Último año</option>
+                    </select>
+
             </div>
 
             <!-- Tabla de turnos -->
@@ -71,9 +81,10 @@
     <script>
         function cargarTurnos() {
             let marcaSeleccionada = $("#marca-filter").val();
+            let periodoSeleccionado = $("#periodo-filter").val();
 
             $.ajax({
-                url: "admin_dashboard.php?marca=" + marcaSeleccionada + "&t=" + new Date().getTime(),
+                url: "admin_dashboard.php?marca=" + marcaSeleccionada + "&periodo=" + periodoSeleccionado + "&t=" + new Date().getTime(),
                 type: "GET",
                 dataType: "json",
                 cache: false,
@@ -95,7 +106,7 @@
         $(document).ready(function() {
             cargarTurnos();  // Cargar turnos al inicio
 
-            $("#marca-filter").change(function() {
+            $("#marca-filter, #periodo-filter").change(function() {
                 cargarTurnos();  // Recargar cuando cambia el filtro
             });
 
