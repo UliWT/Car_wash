@@ -42,14 +42,14 @@ $id_usuario = $_SESSION['id_usuario'];
 <div class="container">
     <div class="option" id="Block1">
         <a href="usuario_v.php">
-            <img src="registrar.png" alt="Registrar un Turno">
+            <img src="../resources/registrar.png" alt="Registrar un Turno">
             <p>Registrar un Turno</p>
         </a>
     </div>
 
     <div class="option" id="Block2">
         <a href="mis_turnos.php">
-            <img src="ver.png" alt="Ver mis Turnos">
+            <img src="../resources/ver.png" alt="Ver mis Turnos">
             <p>Ver mis Turnos</p>
         </a>
     </div>
