@@ -225,174 +225,104 @@
     </div>
 
     <style>
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
-            background-color: #3fada8;
-            border-bottom: 2px solid black;
-        }
-
-        .navbar a {
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .logout-form {
-            margin: 0;
-        }
-        .popup {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-        z-index: 1000;
-        justify-content: center;
-        align-items: center;
-    }
-
-    /* Contenido del popup */
-    .popup-content {
-        background: #ffffff;
-        padding: 20px 30px;
-        border-radius: 12px;
-        width: 90%;
-        max-width: 500px;
-        position: relative;
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-        animation: fadeIn 0.3s ease-in-out;
-    }
-
-    /* Animación de entrada */
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: scale(0.9);
-        }
-        to {
-            opacity: 1;
-            transform: scale(1);
-        }
-    }
-
-    /* Botón para cerrar el popup */
-    .close-btn {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        font-size: 18px;
-        font-weight: bold;
-        color: #555;
-        cursor: pointer;
-    }
-
-    .close-btn:hover {
-        color: #f44336;
-    }
-
-    /* Encabezado del popup */
-    .popup-content h2 {
-        font-size: 1.5rem;
-        margin-bottom: 20px;
-        color: #333;
-        text-align: center;
-    }
-
-    /* Estilos de los formularios dentro del popup */
-    #editTurnoForm {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-    }
-
-    #editTurnoForm label {
-        font-size: 0.9rem;
-        color: #555;
-    }
-
-    #editTurnoForm input,
-    #editTurnoForm select {
-        width: 100%;
-        padding: 8px 12px;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        font-size: 1rem;
-    }
-
-    #editTurnoForm button {
-        background: #3fada8;
-        color: #fff;
-        font-weight: bold;
-        padding: 10px 15px;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: background 0.3s ease-in-out;
-    }
-
-    #editTurnoForm button:hover {
-        background: #329d91;
-    }
-    .filter-container {
-    display: flex;
+/* Estilos para el popup */
+.popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Centra el popup */
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
     align-items: center;
-    justify-content: flex-start;
-    gap: 15px;
-    margin-bottom: 20px;
-    background-color: #f9f9f9;
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.filter-container label {
+/* Contenido del popup */
+.popup-content {
+    background: #ffffff;
+    padding: 20px 30px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Animación de entrada del popup */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Botón para cerrar el popup */
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 18px;
     font-weight: bold;
-    color: #333;
-    margin-right: 5px;
-}
-
-.filter-container select {
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 1rem;
-    background-color: #fff;
-    color: #333;
-}
-
-.filter-container select:hover {
-    border-color: #3fada8;
-}
-
-.filter-container button {
-    padding: 8px 12px;
-    background-color: #3fada8;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 1rem;
+    color: #555;
     cursor: pointer;
-    transition: background-color 0.3s ease;
 }
 
-.filter-container button:hover {
-    background-color: #358e85;
+.close-btn:hover {
+    color: #f44336;
 }
 
-.filter-container button:active {
-    background-color: #2d7a72;
-    transform: scale(0.98);
+/* Estilos del encabezado del popup */
+.popup-content h2 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: #333;
+    text-align: center;
 }
 
-.home{
-    border-radius: 1px;
-    background-color: #2d7a72;
+/* Estilos del formulario dentro del popup */
+#editTurnoForm {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
+
+#editTurnoForm label {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+#editTurnoForm input,
+#editTurnoForm select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+#editTurnoForm button {
+    background: #3fada8;
+    color: #fff;
+    font-weight: bold;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+#editTurnoForm button:hover {
+    background: #329d91;
+}
+
 </style>
 </body>
 </html>
