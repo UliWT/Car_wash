@@ -1,3 +1,4 @@
+
 <?php
 session_start();
 
@@ -114,65 +115,33 @@ $conn->close();
     </main>
 </div>
 
-<script>
-    function editarTurno(id_turno, fecha, servicio) {
-        $("#edit-id_turno").val(id_turno);
-        $("#edit-fecha").val(fecha);
-        $("#edit-servicio").val(servicio);
-        $("#editPopup").show();
-    }
-
-    function cerrarPopup() {
-        $("#editPopup").hide();
-    }
-
-    $("#editTurnoForm").submit(function(event) {
-        event.preventDefault();
-
-        $.ajax({
-            url: "editar_turno.php",
-            type: "POST",
-            data: $(this).serialize(),
-            dataType: "json",
-            success: function(response) {
-                if (response.success) {
-                    alert("Turno actualizado correctamente.");
-                    cerrarPopup();
-                    location.reload();
-                } else {
-                    alert("Error al actualizar: " + response.error);
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error("Error en AJAX:", error);
-                alert("Error al actualizar el turno.");
-            }
-        });
-    });
-
-        function cancelarTurno(id) {
-            if (confirm("¿Seguro que deseas cancelar el turno " + id + "?")) {
-                $.ajax({
-                    url: "cancelar_turno.php",
-                    type: "POST",
-                    data: { id_turno: id },
-                    dataType: "json",
-                    success: function(response) {
-                        if (response.success) {
-                            alert("Turno cancelado correctamente.");
-                            location.reload();
-                        } else {
-                            alert("Error al cancelar: " + response.error);
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error("Error en AJAX:", error);
-                        alert("Error al cancelar el turno.");
+    <script>
+    function cancelarTurno(id) {
+        if (confirm("¿Seguro que deseas cancelar el turno " + id + "?")) {
+            $.ajax({
+                url: "cancelar_turno.php",
+                type: "POST",
+                data: { id_turno: id },
+                dataType: "json",
+                success: function(response) {
+                    if (response.success) {
+                        alert("Turno cancelado correctamente.");
+                        // Elimina la fila del turno de la tabla después de cancelarlo
+                        $("tr").filter(function() {
+                            return $(this).find("td:first").text() == id;
+                        }).remove();  // Remueve la fila correspondiente al turno
+                    } else {
+                        alert("Error al cancelar: " + response.error);
                     }
-                });
-            }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error en AJAX:", error);
+                    alert("Error al cancelar el turno.");
+                }
+            });
         }
-    </script>
+    }
+</script>
 
 </body>
 </html>
