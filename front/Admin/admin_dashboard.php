@@ -88,7 +88,23 @@ if ($result->num_rows > 0) {
     $html = "<tr><td colspan='11'>No hay turnos registrados</td></tr>";
 }
 
+// Obtener los servicios disponibles
+$serviciosSql = "SELECT * FROM servicios";
+$serviciosResult = $conn->query($serviciosSql);
+$servicios = [];
+
+if ($serviciosResult->num_rows > 0) {
+    while ($row = $serviciosResult->fetch_assoc()) {
+        $servicios[] = $row;
+    }
+}
+
 $conn->close();
 
-echo json_encode(["html" => $html, "count" => $count]);
+// Responder con los turnos y los servicios
+echo json_encode([
+    "html" => $html,
+    "count" => $count,
+    "servicios" => $servicios
+]);
 ?>
