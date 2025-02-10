@@ -6,13 +6,15 @@ if ($conexion->connect_error) {
     die("Error de conexión: " . $conexion->connect_error);
 }
 
-// Consulta SQL para obtener los montos recaudados
+// Consulta SQL para obtener los montos recaudados, considerando el precio de los servicios
 $sql = "SELECT 
-            COALESCE(SUM(CASE WHEN fecha >= CURDATE() THEN monto_total END), 0) AS hoy,
-            COALESCE(SUM(CASE WHEN fecha >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH) THEN monto_total END), 0) AS ultimo_mes,
-            COALESCE(SUM(CASE WHEN fecha >= DATE_SUB(CURDATE(), INTERVAL 3 MONTH) THEN monto_total END), 0) AS ultimos_3_meses,
-            COALESCE(SUM(CASE WHEN fecha >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH) THEN monto_total END), 0) AS ultimos_6_meses
-        FROM pagos";
+            COALESCE(SUM(CASE WHEN p.fecha >= CURDATE() THEN p.monto_total END), 0) AS hoy,
+            COALESCE(SUM(CASE WHEN p.fecha >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH) THEN p.monto_total END), 0) AS ultimo_mes,
+            COALESCE(SUM(CASE WHEN p.fecha >= DATE_SUB(CURDATE(), INTERVAL 3 MONTH) THEN p.monto_total END), 0) AS ultimos_3_meses,
+            COALESCE(SUM(CASE WHEN p.fecha >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH) THEN p.monto_total END), 0) AS ultimos_6_meses
+        FROM pagos p
+        JOIN turnos t ON p.id_turno = t.id_turno
+        JOIN servicios s ON t.id_servicio = s.id_servicio";
 
 $resultado = $conexion->query($sql);
 $datos = $resultado->fetch_assoc();
