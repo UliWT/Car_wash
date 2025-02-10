@@ -86,7 +86,7 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        function cargarTurnos() {
+       function cargarTurnos() {
     let marcaSeleccionada = $("#marca-filter").val();
     let periodoSeleccionado = $("#periodo-filter").val();
 
@@ -103,14 +103,24 @@
                 // Calcular el total del precio
                 let totalPrecio = 0;
                 $("#appointments-body tr").each(function() {
-                    let precio = parseFloat($(this).find("td:nth-child(11)").text().replace("$", "").trim());
+                    // Obtener el texto de la columna de precio (columna 11)
+                    let precioTexto = $(this).find("td:nth-child(11)").text().trim();
+
+                    // Limpiar el formato: eliminar "$" y comas, luego convertir a número
+                    let precio = parseFloat(precioTexto.replace("$", "").replace(/\./g, "").replace(",", "."));
                     if (!isNaN(precio)) {
                         totalPrecio += precio;
                     }
                 });
 
-                // Mostrar el total del precio
-                $("#total-precio").text("$" + totalPrecio.toFixed(2));
+                // Formatear el total con separadores de miles y dos decimales
+                let totalFormateado = totalPrecio.toLocaleString("es-ES", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+
+                // Mostrar el total del precio con el símbolo de pesos
+                $("#total-precio").text("$" + totalFormateado);
             } else {
                 $("#appointments-body").html("<tr><td colspan='11'>No hay turnos registrados</td></tr>");
                 $("#total-turnos").text(0);
