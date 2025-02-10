@@ -46,7 +46,7 @@ $id_usuario = $_SESSION['id_usuario'];
 
     <div class="option" id="Block2">
         <a href="mis_turnos.php">
-            <img src="../resources/ver.png" alt="Ver mis Turnos">
+            <img src="../resources/ver.png" alt="Ver mis Turnos" id="ver">
             <p>Ver mis Turnos</p>
         </a>
     </div>
