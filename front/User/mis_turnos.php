@@ -25,7 +25,6 @@ $sql = "SELECT id_turno, nombre_usuario, apellido_usuario, vehiculo_matricula, m
         WHERE id_turno IN (SELECT id_turno FROM turnos WHERE id_usuario = ?)
         ORDER BY id_turno DESC";
 
-
 // Asegurarse de que $id_usuario esté disponible
 if ($id_usuario) {
     // Preparar la consulta
@@ -46,7 +45,6 @@ if ($id_usuario) {
 
 $conn->close();
 ?>
-
 
 <!DOCTYPE html>
 <html lang="es">
@@ -91,7 +89,6 @@ $conn->close();
                                 <td><?= $turno['fecha'] ?></td>
                                 <td><?= htmlspecialchars($turno['estado']) ?></td>
                                 <td>
-                                    <button onclick="editarTurno(<?= $turno['id_turno'] ?>, '<?= $turno['fecha'] ?>', '<?= $turno['servicio'] ?>')">Editar</button>
                                     <button onclick="cancelarTurno(<?= $turno['id_turno'] ?>)">Cancelar</button>
                                 </td>
                             </tr>
@@ -103,26 +100,6 @@ $conn->close();
         </main>
     </div>
 
-    <!-- Popup para editar turnos -->
-    <div id="editPopup" class="popup">
-        <div class="popup-content">
-            <span class="close-btn" onclick="cerrarPopup()">&times;</span>
-            <h2>Editar Turno</h2>
-            <form id="editTurnoForm">
-                <input type="hidden" id="edit-id_turno" name="id_turno">
-                <label for="edit-fecha">Fecha:</label>
-                <input type="date" id="edit-fecha" name="fecha" required>
-                <label for="edit-servicio">Servicio:</label>
-                <select id="edit-servicio" name="id_servicio" required>
-                    <option value="1">Lavado Básico</option>
-                    <option value="2">Lavado Completo</option>
-                    <option value="3">Lavado Premium</option>
-                </select>
-                <button type="submit">Guardar Cambios</button>
-            </form>
-        </div>
-    </div>
-
     <form action="../Logout/logout.php" method="POST">
         <button type="submit">Cerrar Sesión</button>
     </form>
@@ -132,64 +109,32 @@ $conn->close();
     </form>  
 
     <script>
-        function editarTurno(id_turno, fecha, servicio) {
-            $("#edit-id_turno").val(id_turno);
-            $("#edit-fecha").val(fecha);
-            $("#edit-servicio").val(servicio);
-            $("#editPopup").show();
-        }
-
-        function cerrarPopup() {
-            $("#editPopup").hide();
-        }
-
-        $("#editTurnoForm").submit(function(event) {
-            event.preventDefault();
-
+    function cancelarTurno(id) {
+        if (confirm("¿Seguro que deseas cancelar el turno " + id + "?")) {
             $.ajax({
-                url: "editar_turno.php",
+                url: "cancelar_turno.php",
                 type: "POST",
-                data: $(this).serialize(),
+                data: { id_turno: id },
                 dataType: "json",
                 success: function(response) {
                     if (response.success) {
-                        alert("Turno actualizado correctamente.");
-                        cerrarPopup();
-                        location.reload();
+                        alert("Turno cancelado correctamente.");
+                        // Elimina la fila del turno de la tabla después de cancelarlo
+                        $("tr").filter(function() {
+                            return $(this).find("td:first").text() == id;
+                        }).remove();  // Remueve la fila correspondiente al turno
                     } else {
-                        alert("Error al actualizar: " + response.error);
+                        alert("Error al cancelar: " + response.error);
                     }
                 },
                 error: function(xhr, status, error) {
                     console.error("Error en AJAX:", error);
-                    alert("Error al actualizar el turno.");
+                    alert("Error al cancelar el turno.");
                 }
             });
-        });
-
-        function cancelarTurno(id) {
-            if (confirm("¿Seguro que deseas cancelar el turno " + id + "?")) {
-                $.ajax({
-                    url: "cancelar_turno.php",
-                    type: "POST",
-                    data: { id_turno: id },
-                    dataType: "json",
-                    success: function(response) {
-                        if (response.success) {
-                            alert("Turno cancelado correctamente.");
-                            location.reload();
-                        } else {
-                            alert("Error al cancelar: " + response.error);
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error("Error en AJAX:", error);
-                        alert("Error al cancelar el turno.");
-                    }
-                });
-            }
         }
-    </script>
+    }
+</script>
 
 </body>
 </html>

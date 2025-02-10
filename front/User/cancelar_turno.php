@@ -1,36 +1,42 @@
 <?php
-header("Content-Type: application/json");
+session_start();
 
+// Conexión a la base de datos
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "dbcarwash"; // Aquí va tu conexión a la BD
+$dbname = "dbcarwash";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-if($conn->connect_error){
-die("Error de conexión: ". $conn->connect_error);
+if ($conn->connect_error) {
+    die("Error de conexión: " . $conn->connect_error);
 }
 
-if (!isset($_SESSION['id_usuario'])) {
+// Verificar si el usuario está logueado
+$id_usuario = $_SESSION['id_usuario'] ?? null;
+
+if (!$id_usuario) {
     die("Usuario no autenticado.");
 }
 
-$id_turno = $_POST['id_turno']; 
-$id_usuario = $_SESSION['id_usuario']; // Guarda el ID del usuario actual
+$id_turno = $_POST['id_turno'] ?? null;
 
-// Definir la variable en la sesión SQL
-$conn->query("SET @current_user_id = $id_usuario");
+if (!$id_turno) {
+    echo json_encode(['success' => false, 'error' => 'ID de turno no proporcionado']);
+    exit;
+}
 
-$sql = "DELETE FROM turnos WHERE id_turno = ?";
+// Actualizar el estado del turno a "Cancelado"
+$sql = "UPDATE turnos SET estado = 'Cancelado' WHERE id_turno = ? AND id_usuario = ?";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $id_turno);
-
+$stmt->bind_param("ii", $id_turno, $id_usuario);  // Asegura que solo el usuario logueado pueda cancelar el turno
 if ($stmt->execute()) {
-    echo json_encode(["success" => true]);
+    echo json_encode(['success' => true]);
 } else {
-    echo json_encode(["success" => false, "error" => $stmt->error]);
+    echo json_encode(['success' => false, 'error' => 'No se pudo cancelar el turno']);
 }
 
 $stmt->close();
 $conn->close();
+?>
