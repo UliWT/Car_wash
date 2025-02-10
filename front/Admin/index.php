@@ -58,7 +58,7 @@
             <!-- Tabla de turnos -->
             <table class="appointments-table">
                 <thead>
-                    <tr>
+                    <tr>    
                         <th>ID Turno</th>
                         <th>Nombre</th>
                         <th>Apellido</th>
@@ -321,6 +321,11 @@
 
 #editTurnoForm button:hover {
     background: #329d91;
+}
+.filter-container{
+    border: 1px solid #fff;
+    border-radius: 5px;
+    background-color: white;
 }
 
 </style>
