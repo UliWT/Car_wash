@@ -8,7 +8,7 @@
 </head>
 <body>
     <nav class="navbar">
-        <a href="../User/menu.php">Inicio</a>
+        <a id="home" href="menu-admin.php">Inicio</a>
         <form action="../Logout/logout.php" method="POST" class="logout-form">
             <button type="submit">Cerrar Sesión</button>
         </form>
@@ -21,39 +21,39 @@
         <main class="main">
             <!-- Filtro de marcas -->
             <div class="filter-container">
-    <label for="marca-filter">Filtrar por marca:</label>
-    <select id="marca-filter" name="marca">
-        <option value="">Todas</option>
-        <?php
-        // Conexión a la base de datos para obtener las marcas
-        $servername = "localhost";
-        $username = "root";
-        $password = "";
-        $dbname = "dbcarwash";
-        $conn = new mysqli($servername, $username, $password, $dbname);
+                <label for="marca-filter">Filtrar por marca:</label>
+                <select id="marca-filter" name="marca" class="filter-select">
+                    <option value="">Seleccione una marca</option>
+                    <?php
+                    // Conexión a la base de datos para obtener las marcas
+                    $servername = "localhost";
+                    $username = "root";
+                    $password = "";
+                    $dbname = "dbcarwash";
+                    $conn = new mysqli($servername, $username, $password, $dbname);
 
-        if ($conn->connect_error) {
-            die("Error de conexión: " . $conn->connect_error);
-        }
+                    if ($conn->connect_error) {
+                        die("Error de conexión: " . $conn->connect_error);
+                    }
 
-        // Obtener todas las marcas
-        $marcas_result = $conn->query("SELECT id_marcas, marca FROM marcas");
-        while ($row = $marcas_result->fetch_assoc()) {
-            echo "<option value='{$row['id_marcas']}'>{$row['marca']}</option>";
-        }
-        $conn->close();
-        ?>
-    </select>
+                    // Obtener todas las marcas
+                    $marcas_result = $conn->query("SELECT id_marcas, marca FROM marcas");
+                    while ($row = $marcas_result->fetch_assoc()) {
+                        echo "<option value='{$row['id_marcas']}'>{$row['marca']}</option>";
+                    }
+                    $conn->close();
+                    ?>
+                </select>
 
-    <label for="periodo-filter">Filtrar por período:</label>
-    <select id="periodo-filter" name="periodo">
-        <option value="">Todos</option>
-        <option value="1">Último mes</option>
-        <option value="3">Últimos 3 meses</option>
-        <option value="6">Últimos 6 meses</option>
-        <option value="12">Último año</option>
-    </select>
-</div>
+                <label for="periodo-filter">Filtrar por período:</label>
+                <select id="periodo-filter" name="periodo" class="filter-select">
+                    <option value="">Seleccione un período</option>
+                    <option value="1">Último mes</option>
+                    <option value="3">Últimos 3 meses</option>
+                    <option value="6">Últimos 6 meses</option>
+                    <option value="12">Último año</option>
+                </select>
+            </div>
 
             <!-- Tabla de turnos -->
             <table class="appointments-table">
@@ -114,6 +114,10 @@
 
             $("#marca-filter, #periodo-filter").change(function() {
                 cargarTurnos();  // Recargar cuando cambia el filtro
+            });
+
+            $("#apply-filters").click(function() {
+                cargarTurnos();
             });
 
             setInterval(cargarTurnos, 2000); // Refrescar cada 2 segundos
@@ -194,7 +198,7 @@
     </script>
 
     <!-- Popup para editar turnos -->
-    <div id="editPopup" class=".popup">
+    <div id="editPopup" class="popup">
         <div class="popup-content">
             <span class="close-btn" onclick="cerrarPopup()">&times;</span>
             <h2>Editar Turno</h2>
@@ -219,184 +223,176 @@
             </form>
         </div>
     </div>
+
     <style>
-        body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: gray;
-   }
-   
-   .admin-container {
-    padding: 20px;
-   }
-   
-   table {
-    background-color: white;
-    border: 2px solid black;
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-   }
-   
-   th, td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: center;
-   }
-   
-   .header {
-    background-color: #3fada8;
-    color: white;
-    border: 3px solid black;
-    padding: 15px;
-    text-align: center;
-   }
-   
-   .action-btn {
-    padding: 5px 10px;
-    margin: 0 2px;
-    cursor: pointer;
-    color: white;
-   }
-   
-   .action-btn.view { background-color: #4CAF50; }
-   .action-btn.edit { background-color: #FFC107; }
-   .action-btn.delete { background-color: #F44336; }
-   
-   .popup {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 400px;
-    padding: 20px;
-    background: white;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-    display: none;
-   }
-   
-   .popup.active {
-    display: block;
-   }
-   
-   .popup-header {
-    font-weight: bold;
-    margin-bottom: 15px;
-   }
-   
-   .popup-actions {
-    text-align: right;
-   }
-   
-   .popup-actions button {
-    padding: 5px 10px;
-    margin: 0 2px;
-   }
-   
-   .overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 999;
-    display: none;
-   }
-   
-   .overlay.active {
-    display: block;
-   }
-   
-   .turnos{
-    background-color: #3fada8;
-    border: 1px solid black;
-   }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #3fada8;
+            border-bottom: 2px solid black;
+        }
 
-   .navbar {
-       display: flex;
-       justify-content: space-between;
-       align-items: center;
-       padding: 10px 20px;
-       background-color: #3fada8;
-       border-bottom: 2px solid black;
-   }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
 
-   .navbar a {
-       color: white;
-       text-decoration: none;
-       font-weight: bold;
-   }
+        .logout-form {
+            margin: 0;
+        }
+        .popup {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+    }
 
-   .logout-form {
-       margin: 0;
-   }
+    /* Contenido del popup */
+    .popup-content {
+        background: #ffffff;
+        padding: 20px 30px;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 500px;
+        position: relative;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        animation: fadeIn 0.3s ease-in-out;
+    }
 
-   .logout-form button {
-       background-color: #f44336;
-       color: white;
-       border: none;
-       padding: 8px 12px;
-       cursor: pointer;
-   }
+    /* Animación de entrada */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: scale(0.9);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
 
-   .logout-form button:hover {
-       background-color: #d32f2f;
-   }
+    /* Botón para cerrar el popup */
+    .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 18px;
+        font-weight: bold;
+        color: #555;
+        cursor: pointer;
+    }
 
-   .navbar {
+    .close-btn:hover {
+        color: #f44336;
+    }
+
+    /* Encabezado del popup */
+    .popup-content h2 {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+        color: #333;
+        text-align: center;
+    }
+
+    /* Estilos de los formularios dentro del popup */
+    #editTurnoForm {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    #editTurnoForm label {
+        font-size: 0.9rem;
+        color: #555;
+    }
+
+    #editTurnoForm input,
+    #editTurnoForm select {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 1rem;
+    }
+
+    #editTurnoForm button {
+        background: #3fada8;
+        color: #fff;
+        font-weight: bold;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background 0.3s ease-in-out;
+    }
+
+    #editTurnoForm button:hover {
+        background: #329d91;
+    }
+    .filter-container {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 10px 20px;
-    background-color: #3fada8;
-    border-bottom: 2px solid black;
+    justify-content: flex-start;
+    gap: 15px;
+    margin-bottom: 20px;
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.navbar a {
-    color: white;
-    text-decoration: none;
+.filter-container label {
     font-weight: bold;
+    color: #333;
+    margin-right: 5px;
 }
 
-.logout-form {
-    margin: 0;
+.filter-container select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    background-color: #fff;
+    color: #333;
 }
 
-.logout-form button {
-    background-color: #f44336;
+.filter-container select:hover {
+    border-color: #3fada8;
+}
+
+.filter-container button {
+    padding: 8px 12px;
+    background-color: #3fada8;
     color: white;
     border: none;
-    padding: 8px 12px;
+    border-radius: 5px;
+    font-size: 1rem;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
-.logout-form button:hover {
-    background-color: #d32f2f;
-}
-.total-turnos {
-font-size: 1.2em;
-color: #333;
-text-align: center;
-background-color: #f0f8ff;
-padding: 10px;
-border: 1px solid #ddd;
-border-radius: 8px;
-margin-top: 20px;
+.filter-container button:hover {
+    background-color: #358e85;
 }
 
-#total-turnos {
-font-size: 1.2em;
-color: #333;
-text-align: center;
-background-color: #3fada8;
-padding: 10px;
-border: 1px solid #ddd;
-border-radius: 8px;
-margin-top: 20px;
+.filter-container button:active {
+    background-color: #2d7a72;
+    transform: scale(0.98);
 }
-    </style>
+
+.home{
+    border-radius: 1px;
+    background-color: #2d7a72;
+}
+</style>
 </body>
 </html>
