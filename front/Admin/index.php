@@ -8,7 +8,7 @@
 </head>
 <body>
     <nav class="navbar">
-        <a href="../home.php">Inicio</a>
+        <a href="../User/menu.php">Inicio</a>
         <form action="../Logout/logout.php" method="POST" class="logout-form">
             <button type="submit">Cerrar Sesión</button>
         </form>
