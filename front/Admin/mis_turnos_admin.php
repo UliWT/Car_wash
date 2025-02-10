@@ -87,7 +87,6 @@ $conn->close();
                     <th>Precio</th>
                     <th>Fecha</th>
                     <th>Estado</th>
-                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody id="turnos-body">
@@ -103,9 +102,6 @@ $conn->close();
                             <td>$<?= number_format($turno['precio'], 2) ?></td>
                             <td><?= $turno['fecha'] ?></td>
                             <td><?= htmlspecialchars($turno['estado']) ?></td>
-                            <td>
-                                <button onclick="cancelarTurno(<?= $turno['id_turno'] ?>)">Cancelar</button>
-                            </td>
                         </tr>
                     <?php endforeach; ?>
                 <?php endif; ?>
