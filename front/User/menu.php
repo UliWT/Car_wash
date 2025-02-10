@@ -28,9 +28,6 @@ $id_usuario = $_SESSION['id_usuario'];
 
 <!-- Navbar -->
 <div class="navbar">
-    <a href="index.php">
-        <i class="fas fa-home"></i> Inicio
-    </a>
     <form action="../Logout/logout.php" method="POST">
         <button type="submit">
             <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
